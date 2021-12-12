@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin">
+
+    <EditText
+        android:id="@+id/toAddEt"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="接收方的邮箱地址"
+        android:text="zhuli200057@icloud.com" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:onClick="sendFileMail"
+        android:text="发送邮件" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/but_get_file"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:onClick="getFile"
+            android:text="添加附件"
+            android:layout_gravity="center"/>
+
+        <LinearLayout
+            android:id="@+id/linear_files_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+
+    </LinearLayout>
+
+</LinearLayout>

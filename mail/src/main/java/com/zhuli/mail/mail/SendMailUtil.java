@@ -25,6 +25,12 @@ public class SendMailUtil {
     //单个核线的fixed
     private static final ExecutorService executor = Executors.newSingleThreadExecutor();
 
+    /**
+     * @param host     发送方的邮箱服务器 示例：smtp.qq.com
+     * @param port     发送方的邮箱端口号 示例：587
+     * @param from_add 发送方邮箱的地址 示例：1234...@qq.com
+     * @param from_psw 发送方邮箱的授权码 示例：abcdxxxxxxxxxxx
+     */
     public static void init(String host, String port, String from_add, String from_psw) {
         HOST = host;
         PORT = port;
@@ -43,8 +49,8 @@ public class SendMailUtil {
         });
     }
 
-    public static void send(String toAdd) {
-        final MailInfo mailInfo = createMail(toAdd);
+    public static void send(String toAdd, String subject, String content) {
+        final MailInfo mailInfo = createMail(toAdd, subject, content);
         final MailSender sms = new MailSender();
         executor.execute(new Runnable() {
             @Override
@@ -55,8 +61,8 @@ public class SendMailUtil {
     }
 
     @NonNull
-    private static MailInfo createMail(String toAdd) {
-        return createMail(toAdd, new ArrayList<>());
+    private static MailInfo createMail(String toAdd, String subject, String content) {
+        return createMail(toAdd, subject, content, new ArrayList<>());
     }
 
     @NonNull

@@ -128,8 +128,8 @@ public class MailSender {
         Message attachmentMail = createAttachmentMail(info);
         try {
             Transport.send(attachmentMail);
-        } catch (MessagingException e) {
-            e.printStackTrace();
+        } catch (MessagingException ignored) {
+            LogInfo.e("发送带附件的邮件失败");
         }
     }
 
@@ -183,9 +183,8 @@ public class MailSender {
             message.setContent(mp);
             message.saveChanges();
 
-        } catch (Exception e) {
+        } catch (Exception ignored) {
             LogInfo.e("创建带附件的邮件失败");
-            e.printStackTrace();
         }
         // 返回生成的邮件
         return message;

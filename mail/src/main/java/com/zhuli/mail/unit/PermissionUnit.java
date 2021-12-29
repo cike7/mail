@@ -72,7 +72,7 @@ public class PermissionUnit {
             //拒绝了权限
             if (!isAllGranted) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                builder.setMessage("软件需要允许权限, 是否允许?")
+                builder.setMessage("软件功能需要获取权限, 是否继续并且选择允许?")
                         .setTitle("提示")
                         .setPositiveButton("确认", new DialogInterface.OnClickListener() {
                             @Override

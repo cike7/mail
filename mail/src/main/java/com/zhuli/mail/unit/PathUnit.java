@@ -1,15 +1,12 @@
 package com.zhuli.mail.unit;
 
 import android.content.ClipData;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
-import android.os.Build;
-import android.provider.MediaStore;
-
-import com.zhuli.mail.mail.LogInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +31,7 @@ public class PathUnit {
         final List<String> paths = new ArrayList<>();
         if (data.getData() != null) {
             Uri uri = data.getData();
-            String path = Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT ? getPath(context, uri) : getRealPathFromURI(context, uri);
+            String path = ContentUriUtil.getPath(context, uri);
             paths.add(path);
         } else {
             //长按使用多选的情况
@@ -43,7 +40,7 @@ public class PathUnit {
                 for (int i = 0; i < clipData.getItemCount(); i++) {
                     ClipData.Item item = clipData.getItemAt(i);
                     Uri uri = item.getUri();
-                    String path = Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT ? getPath(context, uri) : getRealPathFromURI(context, uri);
+                    String path = ContentUriUtil.getPath(context, uri);
                     paths.add(path);
                 }
             }
@@ -53,58 +50,45 @@ public class PathUnit {
 
 
     /**
-     * 获取真实路径
-     *
-     * @param context
-     * @param uri
-     * @return
+     * 根据指定的图像路径和大小来获取缩略图
+     * 此方法有两点好处：
+     *     1. 使用较小的内存空间，第一次获取的bitmap实际上为null，只是为了读取宽度和高度，
+     *        第二次读取的bitmap是根据比例压缩过的图像，第三次读取的bitmap是所要的缩略图。
+     *     2. 缩略图对于原图像来讲没有拉伸，这里使用了2.2版本的新工具ThumbnailUtils，使
+     *        用这个工具生成的图像不会被拉伸。
+     * @param imagePath 图像的路径
+     * @param width 指定输出图像的宽度
+     * @param height 指定输出图像的高度
+     * @return 生成的缩略图
      */
-    private static String getPath(Context context, Uri uri) {
-        // 通过ContentProvider查询文件路径
-        ContentResolver resolver = context.getContentResolver();
-        Cursor cursor = resolver.query(uri, null, null, null, null);
-        String path = null;
-        if (cursor == null) {
-            // 未查询到，说明为普通文件，可直接通过URI获取文件路径
-            path = uri.getPath();
+    public static Bitmap getImageThumbnail(String imagePath, int width, int height) {
+        Bitmap bitmap;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        // 获取这个图片的宽和高，注意此处的bitmap为null
+        bitmap = BitmapFactory.decodeFile(imagePath, options);
+        options.inJustDecodeBounds = false; // 设为 false
+        // 计算缩放比
+        int h = options.outHeight;
+        int w = options.outWidth;
+        int beWidth = w / width;
+        int beHeight = h / height;
+        int be = 1;
+        if (beWidth < beHeight) {
+            be = beWidth;
         } else {
-            if (cursor.moveToFirst()) {
-                // 多媒体文件，从数据库中获取文件的真实路径
-                path = cursor.getString(cursor.getColumnIndex("_data"));
-                LogInfo.e("多媒体文件，从数据库中获取文件的真实路径" + path);
-            }
-            if (path == null) {
-                if (cursor.moveToFirst()) {
-                    for (int i = 0; i < cursor.getColumnNames().length; i++) {
-                        int nameColumnIndex = cursor.getColumnIndex(cursor.getColumnNames()[i]);
-                        String name = cursor.getString(nameColumnIndex);
-                        LogInfo.e(nameColumnIndex + "获取文件真实路径" + name);
-                    }
-                }
-            }
-            cursor.close();
+            be = beHeight;
         }
-
-        return path;
-    }
-
-    /**
-     * 从 URI 获取真实路径
-     *
-     * @param context
-     * @param contentUri
-     * @return
-     */
-    public static String getRealPathFromURI(Context context, Uri contentUri) {
-        String res = null;
-        String[] proj = {MediaStore.Images.Media.DATA};
-        Cursor cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
-        if (null != cursor && cursor.moveToFirst()) {
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            res = cursor.getString(column_index);
-            cursor.close();
+        if (be <= 0) {
+            be = 1;
         }
-        return res;
+        options.inSampleSize = be;
+        // 重新读入图片，读取缩放后的bitmap，注意这次要把options.inJustDecodeBounds 设为 false
+        bitmap = BitmapFactory.decodeFile(imagePath, options);
+        // 利用ThumbnailUtils来创建缩略图，这里要指定要缩放哪个Bitmap对象
+        bitmap = ThumbnailUtils.extractThumbnail(bitmap, width, height,
+                ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+        return bitmap;
     }
 
 }

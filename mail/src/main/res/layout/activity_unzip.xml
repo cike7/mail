@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/text_zip_file_path"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginHorizontal="100dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:hint="解压路径"
+        android:text="" />
+
+    <Button
+        android:id="@+id/but_unzip_file"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:onClick="onUnzip"
+        android:text="解压文件.zip" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_files_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="10dp"
+        android:orientation="vertical" />
+
+</LinearLayout>

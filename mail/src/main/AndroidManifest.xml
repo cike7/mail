@@ -11,16 +11,16 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application>
-<!--        <activity-->
-<!--            android:name=".MailActivity"-->
-<!--            android:launchMode="singleTask">-->
+        <!--        <activity-->
+        <!--            android:name=".MailActivity"-->
+        <!--            android:launchMode="singleTask">-->
 
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.com.mail" />-->
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--            </intent-filter>-->
+        <!--            <intent-filter>-->
+        <!--                <action android:name="android.intent.action.com.mail" />-->
+        <!--                <category android:name="android.intent.category.DEFAULT" />-->
+        <!--            </intent-filter>-->
 
-<!--        </activity>-->
+        <!--        </activity>-->
 
         <activity
             android:name=".UnzipActivity"
@@ -35,6 +35,7 @@
             <intent-filter>
                 <!-- 前三者必须 -->
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
@@ -46,6 +47,17 @@
             </intent-filter>
 
         </activity>
+
+        <!-- Url访问权限，兼容android7.0 Uri 地址共享访问 -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.yzd.app.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
     </application>
 

@@ -35,7 +35,7 @@ public class MailActivity extends AppCompatActivity {
 
     private EditText toAddEt;
 
-    private RecyclerView linearLayout;
+    private RecyclerView recyclerView;
 
     private FileItemAdapter adapter;
 
@@ -45,14 +45,15 @@ public class MailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_mail);
 
         toAddEt = findViewById(R.id.toAddEt);
-        linearLayout = findViewById(R.id.recycler_files_layout);
+        recyclerView = findViewById(R.id.recycler_files_layout);
 
+        NetworkDiagnosisUtil.init(this);
         WifiContentUtil.registerReceiverWifi(this).setSpareWifi("Tenda_74E7D0", "wifi123456");
         PermissionUtil.verifyStoragePermissions(this);
 
-        linearLayout.setLayoutManager(new GridLayoutManager(this, 4));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 6));
         adapter = new FileItemAdapter(new ArrayList<>(), new ArrayList<>());
-        linearLayout.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);
 
     }
 
@@ -92,7 +93,6 @@ public class MailActivity extends AppCompatActivity {
 
         if (NetworkDiagnosisUtil.getNetworkState()) {
             if (adapter.getFilePaths().size() > 0) {
-                linearLayout.removeAllViews();
                 List<File> files = new ArrayList<>();
                 for (int i = 0; i < adapter.getFilePaths().size(); i++) {
                     if (adapter.getFilePaths().get(i) != null && adapter.getFilePaths().get(i).length() > 0) {
@@ -101,6 +101,7 @@ public class MailActivity extends AppCompatActivity {
                 }
                 if (files.size() > 0) {
                     SendMailUtil.send(files, toAddEt.getText().toString());
+                    Toast.makeText(this, "邮件发送成功!", Toast.LENGTH_SHORT).show();
                     adapter.clear();
                 } else {
                     LogInfo.e("选择邮件为空");

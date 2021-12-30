@@ -114,8 +114,9 @@ public class FileItemAdapter extends RecyclerView.Adapter<FileItemViewViewHolder
     public void clear() {
         if (filePaths != null && filePaths.size() > 0) {
             filePaths.clear();
-            handler.sendEmptyMessage(0);
-            LogInfo.e("清理主菜单元素");
+            names.clear();
+            bitmaps.clear();
+            notifyDataSetChanged();
         }
     }
 

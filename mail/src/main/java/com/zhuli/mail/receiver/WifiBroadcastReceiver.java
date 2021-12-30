@@ -4,10 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.NetworkInfo;
-import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 
 import com.zhuli.mail.mail.LogInfo;
+import com.zhuli.mail.util.NetworkDiagnosisUtil;
 import com.zhuli.mail.util.WifiContentUtil;
 
 /**
@@ -45,7 +45,9 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
                 case WifiManager.WIFI_STATE_ENABLED: {
                     //wifi已经打开
                     LogInfo.e("打开变化：wifi已经打开");
-                    WifiContentUtil.startScanWifi(mWifiManager);
+                    if (!NetworkDiagnosisUtil.getNetworkState()) {
+                        WifiContentUtil.startScanWifi(mWifiManager);
+                    }
                     break;
                 }
                 case WifiManager.WIFI_STATE_ENABLING: {

@@ -26,6 +26,14 @@ import jakarta.mail.internet.MimeMultipart;
  */
 public class JakartaMailImp implements MailSend {
 
+    private ICallback callback;
+
+    public JakartaMailImp() { }
+
+    public JakartaMailImp(ICallback callback) {
+        this.callback = callback;
+    }
+
     @Override
     public void send(MailInfo info) {
 
@@ -81,6 +89,10 @@ public class JakartaMailImp implements MailSend {
         } catch (MessagingException | IOException e) {
             LogInfo.e("发送邮件错误！");
             e.printStackTrace();
+        } finally {
+            if (callback != null) {
+                callback.onCall("邮件发送成功!");
+            }
         }
     }
 

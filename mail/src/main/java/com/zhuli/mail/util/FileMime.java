@@ -1,4 +1,4 @@
-package com.zhuli.mail.unit;
+package com.zhuli.mail.util;
 
 /**
  * Copyright (C) 王字旁的理

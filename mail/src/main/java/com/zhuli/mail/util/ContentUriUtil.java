@@ -1,4 +1,4 @@
-package com.zhuli.mail.unit;
+package com.zhuli.mail.util;
 
 import android.content.ContentUris;
 import android.content.Context;

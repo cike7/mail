@@ -1,4 +1,4 @@
-package com.zhuli.mail.unit;
+package com.zhuli.mail.util;
 
 import android.Manifest;
 import android.app.Activity;
@@ -18,7 +18,7 @@ import com.zhuli.mail.mail.LogInfo;
  * Description: 权限工具
  * Author: zl
  */
-public class PermissionUnit {
+public class PermissionUtil {
 
     //先定义
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
@@ -27,7 +27,8 @@ public class PermissionUnit {
     private static final String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.ACCESS_WIFI_STATE
+            Manifest.permission.ACCESS_WIFI_STATE,
+            Manifest.permission.ACCESS_FINE_LOCATION
     };
 
 

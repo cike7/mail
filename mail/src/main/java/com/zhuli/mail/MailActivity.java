@@ -4,10 +4,8 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -22,10 +20,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.zhuli.mail.adapter.FileItemAdapter;
 import com.zhuli.mail.mail.LogInfo;
 import com.zhuli.mail.mail.SendMailUtil;
-import com.zhuli.mail.unit.NetworkDiagnosisUnit;
-import com.zhuli.mail.unit.PathUnit;
-import com.zhuli.mail.unit.PermissionUnit;
-import com.zhuli.mail.unit.ZipUtils;
+import com.zhuli.mail.util.NetworkDiagnosisUnit;
+import com.zhuli.mail.util.PathUtil;
+import com.zhuli.mail.util.PermissionUtil;
+import com.zhuli.mail.util.WifiContentUtil;
+import com.zhuli.mail.util.ZipUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,13 +45,16 @@ public class MailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mail);
+        WifiContentUtil.registerReceiverWifi(this);
 
         toAddEt = findViewById(R.id.toAddEt);
 
         linearLayout = findViewById(R.id.recycler_files_layout);
 
+        SendMailUtil.init("smtp.qq.com", "456", "2053095395@qq.com", "xadftgekqyktfdif");
         NetworkDiagnosisUnit.init(this);
-        PermissionUnit.verifyStoragePermissions(this);
+
+        PermissionUtil.verifyStoragePermissions(this);
 
         linearLayout.setLayoutManager(new GridLayoutManager(this, 4));
         adapter = new FileItemAdapter(new ArrayList<>(), new ArrayList<>());
@@ -67,7 +69,7 @@ public class MailActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        PermissionUnit.confirmPermissions(this, requestCode, permissions, grantResults);
+        PermissionUtil.confirmPermissions(this, requestCode, permissions, grantResults);
     }
 
 
@@ -76,7 +78,7 @@ public class MailActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
             if (data != null) {
-                adapter.updateData(PathUnit.getPaths(this, data));
+                adapter.updateData(PathUtil.getPaths(this, data));
             }
         }
     }
@@ -144,8 +146,8 @@ public class MailActivity extends AppCompatActivity {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
         // 将本地的目标文件夹的文件，统一打包成test.zip,
         // 查找本地缓存的图片目录文件夹路径
-//        String filepath = getApplication().getExternalCacheDir() + File.separator + df.format(new Date()) + "-" + System.currentTimeMillis() + ".zip";
-        String filepath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath()  + File.separator + df.format(new Date()) + "-" + System.currentTimeMillis() + ".zip";
+//        String filepath = getApplication().getExternalFilesDir() + File.separator + df.format(new Date()) + "-" + System.currentTimeMillis() + ".zip";
+        String filepath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator + df.format(new Date()) + "-" + System.currentTimeMillis() + ".zip";
         LogInfo.e(filepath);
         //批量压缩到指定文件夹下并命名为test.zip
         try {
@@ -153,23 +155,6 @@ public class MailActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-        //打开指定路径
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.addCategory(Intent.CATEGORY_DEFAULT);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        Uri uri = FileProvider.getUriForFile(this, getPackageName() + ".fileprovider", new File(filepath));
-        intent.setDataAndType(uri, "file/*");
-        try {
-            startActivity(intent);
-//            startActivity(Intent.createChooser(intent,"选择浏览工具"));
-        } catch (ActivityNotFoundException e) {
-            e.printStackTrace();
-        }
-
-//        sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,Uri.parse("file://" + filepath)));
-        sendBroadcast(intent);
 
     }
 

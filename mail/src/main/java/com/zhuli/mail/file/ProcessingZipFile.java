@@ -1,6 +1,6 @@
 package com.zhuli.mail.file;
 
-import com.zhuli.mail.unit.ZipUtils;
+import com.zhuli.mail.util.ZipUtils;
 
 import java.io.File;
 import java.io.IOException;

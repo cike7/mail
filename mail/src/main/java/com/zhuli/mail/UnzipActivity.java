@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.zhuli.mail.adapter.FileItemAdapter;
 import com.zhuli.mail.file.DocumentProcessingFactory;
 import com.zhuli.mail.file.FileProcessingCompleteListener;
-import com.zhuli.mail.unit.PathUnit;
+import com.zhuli.mail.util.PathUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,14 +52,14 @@ public class UnzipActivity extends AppCompatActivity {
             }
         });
 
-        linearLayout.setLayoutManager(new GridLayoutManager(this, 4));
+        linearLayout.setLayoutManager(new GridLayoutManager(this, 6));
         adapter = new FileItemAdapter(new ArrayList<>(), new ArrayList<>());
         linearLayout.setAdapter(adapter);
 
         Intent intent = getIntent();
         String action = intent.getAction();
         if (Intent.ACTION_VIEW.equals(action)) {
-            List<String> str = PathUnit.getPaths(UnzipActivity.this, intent);//Uri.decode(uri.getEncodedPath());
+            List<String> str = PathUtil.getPaths(UnzipActivity.this, intent);//Uri.decode(uri.getEncodedPath());
             unzipPath.setValue(str.get(0));
         }
 

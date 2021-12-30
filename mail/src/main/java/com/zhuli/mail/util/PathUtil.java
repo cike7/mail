@@ -1,5 +1,6 @@
-package com.zhuli.mail.unit;
+package com.zhuli.mail.util;
 
+import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +9,9 @@ import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 
+import androidx.core.content.FileProvider;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +22,7 @@ import java.util.List;
  * Description: 从Url返回结果中获取路径
  * Author: zl
  */
-public class PathUnit {
+public class PathUtil {
 
     /**
      * 解析Intent返回结果，返回正式路径
@@ -52,13 +56,14 @@ public class PathUnit {
     /**
      * 根据指定的图像路径和大小来获取缩略图
      * 此方法有两点好处：
-     *     1. 使用较小的内存空间，第一次获取的bitmap实际上为null，只是为了读取宽度和高度，
-     *        第二次读取的bitmap是根据比例压缩过的图像，第三次读取的bitmap是所要的缩略图。
-     *     2. 缩略图对于原图像来讲没有拉伸，这里使用了2.2版本的新工具ThumbnailUtils，使
-     *        用这个工具生成的图像不会被拉伸。
+     * 1. 使用较小的内存空间，第一次获取的bitmap实际上为null，只是为了读取宽度和高度，
+     * 第二次读取的bitmap是根据比例压缩过的图像，第三次读取的bitmap是所要的缩略图。
+     * 2. 缩略图对于原图像来讲没有拉伸，这里使用了2.2版本的新工具ThumbnailUtils，使
+     * 用这个工具生成的图像不会被拉伸。
+     *
      * @param imagePath 图像的路径
-     * @param width 指定输出图像的宽度
-     * @param height 指定输出图像的高度
+     * @param width     指定输出图像的宽度
+     * @param height    指定输出图像的高度
      * @return 生成的缩略图
      */
     public static Bitmap getImageThumbnail(String imagePath, int width, int height) {
@@ -90,5 +95,31 @@ public class PathUnit {
                 ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
         return bitmap;
     }
+
+
+    public static void openPath(Context context, String filepath) {
+
+        //打开指定路径
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//        intent.addCategory(Intent.CATEGORY_DEFAULT);
+//        intent.addCategory(Intent.CATEGORY_APP_FILES);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+        Uri uri = FileProvider.getUriForFile(context, context.getPackageName() + ".fileprovider", new File(filepath));
+
+        intent.setDataAndType(uri, "file/*");
+        try {
+            context.startActivity(intent);
+//            startActivity(Intent.createChooser(intent,"选择浏览工具"));
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+        }
+//        sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,Uri.parse("file://" + filepath)));
+        context.sendBroadcast(intent);
+    }
+
 
 }

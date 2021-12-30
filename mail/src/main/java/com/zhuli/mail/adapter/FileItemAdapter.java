@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.zhuli.mail.R;
 import com.zhuli.mail.mail.LogInfo;
-import com.zhuli.mail.unit.PathUnit;
+import com.zhuli.mail.util.PathUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,7 +98,7 @@ public class FileItemAdapter extends RecyclerView.Adapter<FileItemViewViewHolder
                 for (int i = 0; i < filePaths.size(); i++) {
                     String[] filePath = filePaths.get(i).split("/");
                     names.add(filePath[filePath.length - 1]);
-                    bitmaps.add(PathUnit.getImageThumbnail(filePaths.get(i), 250, 250));
+                    bitmaps.add(PathUtil.getImageThumbnail(filePaths.get(i), 250, 250));
                 }
                 handler.sendEmptyMessage(0);
             }

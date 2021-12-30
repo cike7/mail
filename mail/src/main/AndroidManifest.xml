@@ -6,6 +6,10 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <!--文件读写权限-->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -24,7 +28,8 @@
 
         <activity
             android:name=".UnzipActivity"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
 
             <intent-filter>
                 <action android:name="android.intent.action.com.unzip" />
@@ -51,7 +56,7 @@
         <!-- Url访问权限，兼容android7.0 Uri 地址共享访问 -->
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.yzd.app.fileprovider"
+            android:authorities="com.toprand.app.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -59,6 +64,27 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
+
+
+        <receiver android:name=".receiver.WifiBroadcastReceiver">
+            <intent-filter>
+                <!--监听wifi是开关变化的状态-->
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+                <!--监听wifi连接状态-->
+                <action android:name="android.net.wifi.STATE_CHANGE" />
+                <!--监听wifi列表变化-->
+                <action android:name="android.net.wifi.SCAN_RESULTS" />
+            </intent-filter>
+        </receiver>
+
     </application>
+
+    <permission
+        android:name="com.zhuli.mail.receiver.permission"
+        android:label="receiver permission"
+        android:protectionLevel="normal" />
+
+    <!--声明要使用的权限-->
+    <uses-permission android:name = "com.zhuli.mail.receiver.permission"/>
 
 </manifest>

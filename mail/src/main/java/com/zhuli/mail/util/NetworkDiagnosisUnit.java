@@ -1,4 +1,4 @@
-package com.zhuli.mail.unit;
+package com.zhuli.mail.util;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -9,6 +9,7 @@ import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.NetworkRequest;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.widget.Toast;
 
@@ -27,7 +28,7 @@ import java.lang.ref.WeakReference;
 /**
  * Copyright (C) 王字旁的理
  * Date: 2021/12/21
- * Description: 网络检查工具
+ * Description: 网络检查工具，检查当前网络是否可用
  * Author: zl
  */
 public class NetworkDiagnosisUnit {

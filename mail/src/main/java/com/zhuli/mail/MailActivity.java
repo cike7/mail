@@ -3,7 +3,6 @@ package com.zhuli.mail;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
@@ -13,14 +12,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.zhuli.mail.adapter.FileItemAdapter;
 import com.zhuli.mail.mail.LogInfo;
 import com.zhuli.mail.mail.SendMailUtil;
-import com.zhuli.mail.util.NetworkDiagnosisUnit;
+import com.zhuli.mail.util.NetworkDiagnosisUtil;
 import com.zhuli.mail.util.PathUtil;
 import com.zhuli.mail.util.PermissionUtil;
 import com.zhuli.mail.util.WifiContentUtil;
@@ -52,7 +50,7 @@ public class MailActivity extends AppCompatActivity {
         linearLayout = findViewById(R.id.recycler_files_layout);
 
         SendMailUtil.init("smtp.qq.com", "456", "2053095395@qq.com", "xadftgekqyktfdif");
-        NetworkDiagnosisUnit.init(this);
+        NetworkDiagnosisUtil.init(this);
 
         PermissionUtil.verifyStoragePermissions(this);
 
@@ -91,7 +89,7 @@ public class MailActivity extends AppCompatActivity {
      */
     public void sendFileMail(View view) {
 
-        if (NetworkDiagnosisUnit.getNetworkState()) {
+        if (NetworkDiagnosisUtil.getNetworkState()) {
             if (adapter.getFilePaths().size() > 0) {
                 linearLayout.removeAllViews();
                 List<File> files = new ArrayList<>();
@@ -109,7 +107,7 @@ public class MailActivity extends AppCompatActivity {
                 }
             }
         } else {
-            NetworkDiagnosisUnit.notNetworkConnect();
+            NetworkDiagnosisUtil.notNetworkConnect();
         }
     }
 

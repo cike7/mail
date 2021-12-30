@@ -31,7 +31,7 @@ import java.lang.ref.WeakReference;
  * Description: 网络检查工具，检查当前网络是否可用
  * Author: zl
  */
-public class NetworkDiagnosisUnit {
+public class NetworkDiagnosisUtil {
 
     private static WeakReference<Context> mContext;
 

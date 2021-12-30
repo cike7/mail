@@ -21,12 +21,14 @@ import java.util.List;
  */
 public class WifiContentUtil {
 
+    private static SpareWifi spareWifi;
+
     /**
      * 监听wifi变化
      *
      * @param context
      */
-    public static void registerReceiverWifi(Context context) {
+    public static SpareWifi registerReceiverWifi(Context context) {
         WifiBroadcastReceiver wifiReceiver = new WifiBroadcastReceiver();
         IntentFilter filter = new IntentFilter();
         //监听wifi是开关变化的状态
@@ -36,7 +38,10 @@ public class WifiContentUtil {
         //监听wifi列表变化（开启一个热点或者关闭一个热点）
         filter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
         context.registerReceiver(wifiReceiver, filter);
+        spareWifi = new SpareWifi();
+        return spareWifi;
     }
+
 
     /**
      * 开启wifi
@@ -54,6 +59,10 @@ public class WifiContentUtil {
     public static void startScanWifi(WifiManager manager) {
         if (manager != null) {
             manager.startScan();
+            if (spareWifi.getWifiName().equals("") || spareWifi.getWifiPassword().equals("")) {
+                return;
+            }
+            connectWifi(manager, spareWifi.getWifiName(), spareWifi.getWifiPassword(), "WPA");
         }
     }
 
@@ -161,4 +170,34 @@ public class WifiContentUtil {
             e.printStackTrace();
         }
     }
+
+
+    /**
+     * 备用WiFi
+     */
+    public static class SpareWifi {
+
+        private String wifiName = "", wifiPassword = "";
+
+        /**
+         * 设置备用WiFi ,应该保证这个是正确的
+         *
+         * @param ssid
+         * @param password
+         */
+        public void setSpareWifi(String ssid, String password) {
+            wifiName = ssid;
+            wifiPassword = password;
+        }
+
+        protected String getWifiName() {
+            return wifiName;
+        }
+
+        protected String getWifiPassword() {
+            return wifiPassword;
+        }
+
+    }
+
 }

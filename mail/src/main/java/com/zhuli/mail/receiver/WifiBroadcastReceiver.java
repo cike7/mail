@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.NetworkInfo;
+import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 
 import com.zhuli.mail.mail.LogInfo;
@@ -22,13 +23,9 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        LogInfo.e("监听wifi状态广播接收器");
-
         if (mWifiManager == null) {
-            mWifiManager = (WifiManager) context.getApplicationContext().getSystemService(context.WIFI_SERVICE);
+            mWifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         }
-
-        StringBuilder tv_wifiState = new StringBuilder();
 
         if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())) {
             //wifi开关变化
@@ -36,32 +33,29 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
             switch (state) {
                 case WifiManager.WIFI_STATE_DISABLED: {
                     //wifi关闭
-                    LogInfo.e("已经关闭");
-                    tv_wifiState.append("\n 打开变化：wifi已经关闭");
+                    LogInfo.e("打开变化：wifi已经关闭");
+                    WifiContentUtil.openWifi(mWifiManager);
                     break;
                 }
                 case WifiManager.WIFI_STATE_DISABLING: {
                     //wifi正在关闭
-                    LogInfo.e("正在关闭");
-                    tv_wifiState.append("\n 打开变化：wifi正在关闭");
+                    LogInfo.e("打开变化：wifi正在关闭");
                     break;
                 }
                 case WifiManager.WIFI_STATE_ENABLED: {
                     //wifi已经打开
-                    LogInfo.e("已经打开");
-                    tv_wifiState.append("\n 打开变化：wifi已经打开");
+                    LogInfo.e("打开变化：wifi已经打开");
+                    WifiContentUtil.startScanWifi(mWifiManager);
                     break;
                 }
                 case WifiManager.WIFI_STATE_ENABLING: {
                     //wifi正在打开
-                    LogInfo.e("正在打开");
-                    tv_wifiState.append("\n 打开变化：wifi正在打开");
+                    LogInfo.e("打开变化：wifi正在打开");
                     break;
                 }
                 case WifiManager.WIFI_STATE_UNKNOWN: {
                     //未知
-                    LogInfo.e("未知状态");
-                    tv_wifiState.append("\n 打开变化：wifi未知状态");
+                    LogInfo.e("打开变化：wifi未知状态");
                     break;
                 }
             }
@@ -70,18 +64,12 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
             NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
             LogInfo.e("--NetworkInfo--" + info.toString());
             if (NetworkInfo.State.DISCONNECTED == info.getState()) {//wifi没连接上
-                LogInfo.e("wifi没连接上");
+                LogInfo.e("连接状态：wifi没连接上");
 
-                WifiContentUtil.openWifi(mWifiManager);
-                WifiContentUtil.startScanWifi(mWifiManager);
-
-                tv_wifiState.append("\n 连接状态：wifi没连接上");
             } else if (NetworkInfo.State.CONNECTED == info.getState()) {//wifi连接上了
-                LogInfo.e("wifi以连接");
-
+                LogInfo.e("wifi已连接");
             } else if (NetworkInfo.State.CONNECTING == info.getState()) {//正在连接
-                LogInfo.e("wifi正在连接");
-                tv_wifiState.append("\n 连接状态：wifi正在连接");
+                LogInfo.e("连接状态：wifi正在连接");
             }
         } else if (WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(intent.getAction())) {
             //监听wifi列表变化

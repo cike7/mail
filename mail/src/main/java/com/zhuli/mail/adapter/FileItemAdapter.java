@@ -49,8 +49,8 @@ public class FileItemAdapter extends RecyclerView.Adapter<FileItemViewViewHolder
 
     @Override
     public void onBindViewHolder(FileItemViewViewHolder holder, int position) {
-        if(names != null && names.size() > 0){
-            if(bitmaps != null && bitmaps.size() > 0) {
+        if (names != null && names.size() > 0) {
+            if (bitmaps != null && bitmaps.size() > 0) {
                 holder.bindData(names.get(position), bitmaps.get(position));
             }
         }
@@ -109,6 +109,14 @@ public class FileItemAdapter extends RecyclerView.Adapter<FileItemViewViewHolder
 
     public List<String> getFilePaths() {
         return filePaths;
+    }
+
+    public void clear() {
+        if (filePaths != null && filePaths.size() > 0) {
+            filePaths.clear();
+            handler.sendEmptyMessage(0);
+            LogInfo.e("清理主菜单元素");
+        }
     }
 
     private final Handler handler = new Handler(Looper.getMainLooper()) {

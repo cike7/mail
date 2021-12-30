@@ -3,7 +3,9 @@ package com.zhuli.mail.mail;
 import androidx.annotation.NonNull;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -38,26 +40,46 @@ public class SendMailUtil {
         FROM_PSW = from_psw;
     }
 
+    public static void examineInit() {
+        if (HOST == null || HOST.equals("")) {
+            new NullPointerException("邮箱未初始化").printStackTrace();
+        } else if (PORT == null || PORT.equals("")) {
+            new NullPointerException("邮箱未初始化").printStackTrace();
+        } else if (FROM_ADD == null || FROM_ADD.equals("")) {
+            new NullPointerException("邮箱未初始化").printStackTrace();
+        } else if (FROM_PSW == null || FROM_PSW.equals("")) {
+            new NullPointerException("邮箱未初始化").printStackTrace();
+        }
+    }
+
     public static void send(final List<File> files, String toAdd) {
         final MailInfo mailInfo = createMail(toAdd, files);
-        final MailSender sms = new MailSender();
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                sms.sendFileMail(mailInfo);
+                MailSend mail = new JakartaMailImp();
+//                MailSend mail = new JavaxMailImp();
+                mail.send(mailInfo);
             }
         });
     }
 
     public static void send(String toAdd, String subject, String content) {
         final MailInfo mailInfo = createMail(toAdd, subject, content);
-        final MailSender sms = new MailSender();
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                sms.sendTextMail(mailInfo);
+                MailSend mail = new JakartaMailImp();
+//                MailSend mail = new JavaxMailImp();
+                mail.send(mailInfo);
             }
         });
+    }
+
+
+    @NonNull
+    private static MailInfo createMail(String toAdd, List<File> files) {
+        return createMail(toAdd, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()), "", files);
     }
 
     @NonNull
@@ -66,23 +88,18 @@ public class SendMailUtil {
     }
 
     @NonNull
-    private static MailInfo createMail(String toAdd, List<File> files) {
-        return createMail(toAdd, "", "", files);
-    }
-
-    @NonNull
     private static MailInfo createMail(String toAdd, String subject, String content, List<File> files) {
         final MailInfo mailInfo = new MailInfo();
         mailInfo.setMailServerHost(HOST);//发送方邮箱服务器
         mailInfo.setMailServerPort(PORT);//发送方邮箱端口号
-        mailInfo.setValidate(true);
         mailInfo.setUserName(FROM_ADD); // 发送者邮箱地址
         mailInfo.setPassword(FROM_PSW);// 发送者邮箱授权码
         mailInfo.setFromAddress(FROM_ADD); // 发送者邮箱
+        mailInfo.setValidate(true);// 开启验证
         mailInfo.setToAddress(toAdd); // 接收者邮箱
         mailInfo.setSubject(subject); // 邮件主题
         mailInfo.setContent(content); // 邮件文本
-        mailInfo.setAttachFiles(files);
+        mailInfo.setAttachFiles(files); //附加文件
         return mailInfo;
     }
 

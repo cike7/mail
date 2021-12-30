@@ -1,6 +1,7 @@
 package com.zhuli.mail.mail;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -12,17 +13,36 @@ import java.util.Properties;
  */
 public class MailInfo {
 
-    private String mailServerHost;// 发送邮件的服务器的IP
-    private String mailServerPort;// 发送邮件的服务器的端口
-    private String fromAddress;// 邮件发送者的地址
-    private String toAddress;    // 邮件接收者的地址
-    private String userName;// 登陆邮件发送服务器的用户名
-    private String password;// 登陆邮件发送服务器的密码
-    private boolean validate = true;// 是否需要身份验证
-    private String subject;// 邮件主题
-    private String content;// 邮件的文本内容
-    private List<File> attachFiles;// 邮件附件的文件名
-    
+    // 发送邮件的服务器的IP
+    private String mailServerHost;
+
+    // 发送邮件的服务器的端口
+    private String mailServerPort;
+
+    // 邮件发送者的地址
+    private String fromAddress;
+
+    // 邮件接收者的地址
+    private List<String> toAddress;
+
+    // 登陆邮件发送服务器的用户名
+    private String userName;
+
+    // 登陆邮件发送服务器的密码
+    private String password;
+
+    // 是否需要身份验证
+    private boolean validate = true;
+
+    // 邮件主题
+    private String subject;
+
+    // 邮件的文本内容
+    private String content;
+
+    // 邮件附件的文件名
+    private List<File> attachFiles;
+
     public String getMailServerHost() {
         return mailServerHost;
     }
@@ -71,12 +91,21 @@ public class MailInfo {
         this.password = password;
     }
 
-    public String getToAddress() {
+    public List<String> getToAddress() {
         return toAddress;
     }
 
     public void setToAddress(String toAddress) {
-        this.toAddress = toAddress;
+        if (this.toAddress == null) {
+            this.toAddress = new ArrayList<>();
+        }
+        if(this.toAddress.equals(",")){
+            for (int i = 0; i < toAddress.split(",").length; i++) {
+                this.toAddress.add(toAddress.split(",")[i]);
+            }
+        }else {
+            this.toAddress.add(toAddress);
+        }
     }
 
     public String getUserName() {
@@ -107,11 +136,22 @@ public class MailInfo {
      * 获得邮件会话属性
      */
     public Properties getProperties() {
-        Properties p = new Properties();
-        p.put("mail.smtp.host", getMailServerHost());
-        p.put("mail.smtp.port", getMailServerPort());
-        p.put("mail.smtp.auth", isValidate() ? "true" : "false");
-        return p;
+        Properties props = new Properties();
+        // 发送主机
+        props.put("mail.smtp.host", getMailServerHost());
+        // 发送服务器端口
+        props.put("mail.smtp.port", getMailServerPort());
+        // 需要授权
+        props.put("mail.smtp.auth", isValidate());
+        // 发送者邮箱
+        props.put("mail.smtp.user", getUserName());
+        // 发送者邮箱授权码
+        props.put("mail.smtp.pass", getPassword());
+        // 使用ssl
+        props.put("mail.smtp.ssl", true);
+        // 使用ssl
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        return props;
     }
 
 }

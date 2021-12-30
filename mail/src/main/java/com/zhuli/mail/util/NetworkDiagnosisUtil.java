@@ -57,15 +57,12 @@ public class NetworkDiagnosisUtil {
             NetworkRequest.Builder builder = new NetworkRequest.Builder();
             NetworkRequest request = builder.build();
             manager.registerNetworkCallback(request, callback);
-            callback.setCallable(new NetworkCallbackImpl.NetworkCall() {
-                @Override
-                public void call(boolean connectState) {
-                    if (!connectState && ping()) {
-                        nowNetworkConnectState = false;
-                        notNetworkConnect();
-                    } else {
-                        nowNetworkConnectState = true;
-                    }
+            callback.setCallable(connectState -> {
+                if (!connectState && ping()) {
+                    nowNetworkConnectState = false;
+                    notNetworkConnect();
+                } else {
+                    nowNetworkConnectState = true;
                 }
             });
         } else {

@@ -43,15 +43,11 @@ public class MailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mail);
-        WifiContentUtil.registerReceiverWifi(this);
 
         toAddEt = findViewById(R.id.toAddEt);
-
         linearLayout = findViewById(R.id.recycler_files_layout);
 
-        SendMailUtil.init("smtp.qq.com", "456", "2053095395@qq.com", "xadftgekqyktfdif");
-        NetworkDiagnosisUtil.init(this);
-
+        WifiContentUtil.registerReceiverWifi(this).setSpareWifi("Tenda_74E7D0", "wifi123456");
         PermissionUtil.verifyStoragePermissions(this);
 
         linearLayout.setLayoutManager(new GridLayoutManager(this, 4));
@@ -60,6 +56,11 @@ public class MailActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        SendMailUtil.examineInit();
+    }
 
     /**
      * 申请权限结果返回处理
@@ -100,8 +101,7 @@ public class MailActivity extends AppCompatActivity {
                 }
                 if (files.size() > 0) {
                     SendMailUtil.send(files, toAddEt.getText().toString());
-                    adapter.getFilePaths().clear();
-                    LogInfo.e("邮件发送成功");
+                    adapter.clear();
                 } else {
                     LogInfo.e("选择邮件为空");
                 }

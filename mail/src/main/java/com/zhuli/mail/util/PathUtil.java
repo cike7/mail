@@ -44,8 +44,10 @@ public class PathUtil {
                 for (int i = 0; i < clipData.getItemCount(); i++) {
                     ClipData.Item item = clipData.getItemAt(i);
                     Uri uri = item.getUri();
-                    String path = ContentUriUtil.getPath(context, uri);
-                    paths.add(path);
+                    if (uri != null) {
+                        String path = ContentUriUtil.getPath(context, uri);
+                        paths.add(path);
+                    }
                 }
             }
         }

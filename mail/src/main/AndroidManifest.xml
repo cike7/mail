@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.zhuli.mail">
 
     <!--网络权限-->
@@ -13,6 +14,22 @@
     <!--文件读写权限-->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.WRITE_MEDIA_STORAGE"
+        tools:ignore="ProtectedPermissions" />
+
+
+    <!-- 访问位置额外命令 -->
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <!-- 颤动 -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- 请求加入后台运行 -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <!-- 前台服务开启权限 -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!-- 弹出横幅通知的权限了，用于开启 debug 版本的应用在 6.0 系统上的层叠窗口权限 -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application>
         <!--        <activity-->
@@ -28,8 +45,9 @@
 
         <activity
             android:name=".UnzipActivity"
+            android:exported="true"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
             <intent-filter>
                 <action android:name="android.intent.action.com.unzip" />
@@ -53,7 +71,7 @@
 
         </activity>
 
-        <!-- Url访问权限，兼容android7.0 Uri 地址共享访问 -->
+        <!-- Url访问权限，兼容android7.0之后 Uri 地址共享访问 -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.toprand.app.fileprovider"
@@ -64,9 +82,9 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-
-
-        <receiver android:name=".receiver.WifiBroadcastReceiver">
+        <receiver
+            android:name=".receiver.WifiBroadcastReceiver"
+            android:exported="true">
             <intent-filter>
                 <!--监听wifi是开关变化的状态-->
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
@@ -85,6 +103,6 @@
         android:protectionLevel="normal" />
 
     <!--声明要使用的权限-->
-    <uses-permission android:name = "com.zhuli.mail.receiver.permission"/>
+    <uses-permission android:name="com.zhuli.mail.receiver.permission" />
 
 </manifest>

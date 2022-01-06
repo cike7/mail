@@ -23,12 +23,18 @@ public class PermissionUtil {
     //先定义
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
 
+//    Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+//    Manifest.permission.FOREGROUND_SERVICE,
+//    Manifest.permission.SYSTEM_ALERT_WINDOW
+
     //读取外部存储
     private static final String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.ACCESS_WIFI_STATE,
-            Manifest.permission.ACCESS_FINE_LOCATION
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_LOCATION_EXTRA_COMMANDS,
+            Manifest.permission.VIBRATE
     };
 
 
@@ -78,7 +84,8 @@ public class PermissionUtil {
                         .setPositiveButton("确认", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                ActivityCompat.requestPermissions(activity, permissions, 1);
+                                dialog.dismiss();
+                                ActivityCompat.requestPermissions(activity, permissions, REQUEST_EXTERNAL_STORAGE);
                             }
                         })
                         .setNegativeButton("取消", new DialogInterface.OnClickListener() {

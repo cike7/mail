@@ -6,8 +6,13 @@ import android.content.IntentFilter;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
+import android.net.wifi.WifiNetworkSuggestion;
+import android.os.Build;
 import android.text.TextUtils;
 
+import androidx.annotation.RequiresApi;
+
+import com.zhuli.mail.mail.LogInfo;
 import com.zhuli.mail.receiver.WifiBroadcastReceiver;
 
 import java.lang.reflect.Method;
@@ -122,6 +127,7 @@ public class WifiContentUtil {
         }
         //3、链接wifi
         wifiManager.addNetwork(conf);
+        //TODO 新 ：WifiNetworkSuggestion
 
         List<WifiConfiguration> list = wifiManager.getConfiguredNetworks();
         for (WifiConfiguration i : list) {

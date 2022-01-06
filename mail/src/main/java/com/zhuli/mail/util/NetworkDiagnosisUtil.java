@@ -37,6 +37,10 @@ public class NetworkDiagnosisUtil {
 
     private static boolean nowNetworkConnectState = false;
 
+    public static void setNowNetworkConnectState(boolean state) {
+        nowNetworkConnectState = state;
+    }
+
     public static boolean getNetworkState() {
         return nowNetworkConnectState;
     }
@@ -91,12 +95,7 @@ public class NetworkDiagnosisUtil {
                             mContext.get().startActivity(new Intent(android.provider.Settings.ACTION_WIFI_SETTINGS));
                         }
                     })
-                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
+                    .setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
             builder.create().show();
         }
     }

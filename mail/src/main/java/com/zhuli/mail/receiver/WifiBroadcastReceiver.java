@@ -10,6 +10,7 @@ import com.zhuli.mail.mail.LogInfo;
 import com.zhuli.mail.util.NetworkDiagnosisUtil;
 import com.zhuli.mail.util.WifiContentUtil;
 
+
 /**
  * Copyright (C), 2003-2021, 深圳市图派科技有限公司
  * Date: 2021/12/30
@@ -44,7 +45,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
                 }
                 case WifiManager.WIFI_STATE_ENABLED: {
                     //wifi已经打开
-                    LogInfo.e("打开变化：wifi已经打开");
+                    LogInfo.e("打开变化：wifi已经打开，网络状态：" + NetworkDiagnosisUtil.getNetworkState());
                     if (!NetworkDiagnosisUtil.getNetworkState()) {
                         WifiContentUtil.startScanWifi(mWifiManager);
                     }
@@ -70,12 +71,20 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
 
             } else if (NetworkInfo.State.CONNECTED == info.getState()) {//wifi连接上了
                 LogInfo.e("wifi已连接");
+                if (!NetworkDiagnosisUtil.getNetworkState()) {
+                    new ReceiveHandler(context).sendEmptyMessage(200);
+                    NetworkDiagnosisUtil.setNowNetworkConnectState(true);
+                }
+
             } else if (NetworkInfo.State.CONNECTING == info.getState()) {//正在连接
                 LogInfo.e("连接状态：wifi正在连接");
             }
         } else if (WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(intent.getAction())) {
             //监听wifi列表变化
             LogInfo.e("wifi列表发生变化");
+            if (!NetworkDiagnosisUtil.getNetworkState()) {
+                NetworkDiagnosisUtil.notNetworkConnect();
+            }
         }
     }
 

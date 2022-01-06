@@ -19,4 +19,23 @@
         name="external_cache"
         path="." />
 
+
+    <external-cache-path
+        name="storage"
+        path="/storage/emulated/0"/>
+    <external-files-path
+        name="storage"
+        path="/storage/emulated/0"/>
+    <external-media-path
+        name="storage"
+        path="/storage/emulated/0"/>
+    <cache-path
+        name="storage"
+        path="/storage/emulated/0"/>
+    <files-path
+        name="storage"
+        path="/storage/emulated/0"/>
+    <external-path
+        name="storage"
+        path="/storage/emulated/0"/>
 </paths>

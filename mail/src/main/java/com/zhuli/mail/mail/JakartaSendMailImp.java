@@ -26,11 +26,12 @@ import jakarta.mail.internet.MimeMultipart;
  */
 public class JakartaSendMailImp implements SendMessage<MailInfo> {
 
-    private ICallback callback;
+    private ICallback<String> callback;
 
-    public JakartaSendMailImp() { }
+    public JakartaSendMailImp() {
+    }
 
-    public JakartaSendMailImp(ICallback callback) {
+    public JakartaSendMailImp(ICallback<String> callback) {
         this.callback = callback;
     }
 
@@ -70,6 +71,7 @@ public class JakartaSendMailImp implements SendMessage<MailInfo> {
             MimeMultipart mp = new MimeMultipart();
             // 设置邮件正文
             mp.addBodyPart(text);
+            mp.setSubType("mixed");
             // 附件
             if (info.getAttachFiles().size() > 0) {
                 // 创建邮件附件
@@ -78,7 +80,6 @@ public class JakartaSendMailImp implements SendMessage<MailInfo> {
                     attach.attachFile(file);
                     mp.addBodyPart(attach);
                 }
-                mp.setSubType("mixed");
             }
             msg.setContent(mp);
             msg.setSentDate(new Date());

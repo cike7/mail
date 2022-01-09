@@ -15,7 +15,7 @@ public class LogInfo {
     //TAG
     public static final String TAG = "MailTest";
 
-    public static void e(String text) {
+    public static <T> void e(T text) {
         if (DEBUG) {
             Log.e(TAG, "" + text);
         }

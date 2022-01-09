@@ -71,13 +71,10 @@ public class MailManage implements TransportAbstraction {
 
         if (data instanceof Iterable) {
             MailInfo mailInfo = createSendMail(toAdd, (List<File>) data);
-            executor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    SendMessage<MailInfo> mail = new JakartaSendMailImp();
+            executor.execute(() -> {
+                SendMessage<MailInfo> mail = new JakartaSendMailImp();
 //                MailSend mail = new JavaxMailImp();
-                    mail.send(mailInfo);
-                }
+                mail.send(mailInfo);
             });
         }
 
@@ -88,12 +85,9 @@ public class MailManage implements TransportAbstraction {
     public void receive(CallbackProcessingListener callback) {
 
         MailInfo mailInfo = createReceiveMail();
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                ReceiveMessage data = new JakartaReceiveMailImp(mailInfo);
-                data.receive(callback);
-            }
+        executor.execute(() -> {
+            ReceiveMessage data = new JakartaReceiveMailImp(mailInfo);
+            data.receive(callback);
         });
 
     }

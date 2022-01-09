@@ -18,8 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
         android:layout_marginBottom="5dp"
-        android:alpha="0.6"
-        android:textSize="10sp"
-        android:textColor="#FFFFFF" />
+        android:textSize="12sp"
+        android:textColor="@android:color/black" />
 
 </FrameLayout>

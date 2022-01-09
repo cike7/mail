@@ -19,12 +19,12 @@ import com.zhuli.mail.R;
  * Description:
  * Author: zl
  */
-public class FileItemViewViewHolder extends RecyclerView.ViewHolder {
+public class FileItemViewHolder extends RecyclerView.ViewHolder {
 
     private TextView textView;
     private ImageView imageView;
 
-    public FileItemViewViewHolder(@NonNull View itemView) {
+    public FileItemViewHolder(@NonNull View itemView) {
         super(itemView);
         textView = itemView.findViewById(R.id.text_file_item_view);
         imageView = itemView.findViewById(R.id.img_file_item_view);

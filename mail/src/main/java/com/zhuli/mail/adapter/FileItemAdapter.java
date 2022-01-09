@@ -27,7 +27,7 @@ import java.util.concurrent.Executors;
  * Description:
  * Author: zl
  */
-public class FileItemAdapter extends RecyclerView.Adapter<FileItemViewViewHolder> {
+public class FileItemAdapter extends RecyclerView.Adapter<FileItemViewHolder> {
 
     private final ExecutorService executors = Executors.newCachedThreadPool();
 
@@ -42,13 +42,13 @@ public class FileItemAdapter extends RecyclerView.Adapter<FileItemViewViewHolder
 
     @NonNull
     @Override
-    public FileItemViewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public FileItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_file, parent, false);
-        return new FileItemViewViewHolder(view);
+        return new FileItemViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(FileItemViewViewHolder holder, int position) {
+    public void onBindViewHolder(FileItemViewHolder holder, int position) {
         if (names != null && names.size() > 0) {
             if (bitmaps != null && bitmaps.size() > 0) {
                 holder.bindData(names.get(position), bitmaps.get(position));

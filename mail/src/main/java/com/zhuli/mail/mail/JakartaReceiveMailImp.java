@@ -1,28 +1,15 @@
 package com.zhuli.mail.mail;
 
-import com.google.gson.Gson;
-import com.sun.mail.imap.IMAPMessage;
 import com.zhuli.mail.file.CallbackProcessingListener;
+import com.zhuli.mail.util.StringUtil;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
 import java.util.Properties;
 
 import jakarta.mail.Address;
-import jakarta.mail.Authenticator;
-import jakarta.mail.BodyPart;
 import jakarta.mail.Folder;
 import jakarta.mail.Message;
-import jakarta.mail.MessagingException;
-import jakarta.mail.PasswordAuthentication;
 import jakarta.mail.Session;
 import jakarta.mail.Store;
-import jakarta.mail.Transport;
-import jakarta.mail.internet.InternetAddress;
-import jakarta.mail.internet.MimeBodyPart;
-import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
 
 
@@ -70,18 +57,18 @@ public class JakartaReceiveMailImp implements ReceiveMessage<String> {
                 LogInfo.e("getContentType：" + msg[i].getContentType());
                 LogInfo.e("getFolder：" + msg[i].getFolder().getName());
                 for (Address add : msg[i].getFrom()) {
-                    LogInfo.e("getFrom：" + new Gson().toJson(add));
+                    LogInfo.e("getFrom：" + add);
                 }
                 LogInfo.e("getDescription：" + msg[i].getDescription());
                 LogInfo.e("getDisposition：" + msg[i].getDisposition());
                 LogInfo.e("getFileName：" + msg[i].getFileName());
 
                 for (Address add : msg[i].getAllRecipients()) {
-                    LogInfo.e("getAllRecipients：" + new Gson().toJson(add));
+                    LogInfo.e("getAllRecipients：" + add);
                 }
                 LogInfo.e("getMessageNumber：" + msg[i].getMessageNumber());
-                LogInfo.e("getReceivedDate：" + new Gson().toJson(msg[i].getReceivedDate()));
-                LogInfo.e("getSentDate：" + new Gson().toJson(msg[i].getSentDate()));
+                LogInfo.e("getReceivedDate：" + msg[i].getReceivedDate());
+                LogInfo.e("getSentDate：" + msg[i].getSentDate());
                 LogInfo.e("getSession：" + msg[i].getSession().toString());
                 LogInfo.e("getLineCount：" + msg[i].getLineCount());
                 LogInfo.e("getSize：" + msg[i].getSize());
@@ -92,6 +79,8 @@ public class JakartaReceiveMailImp implements ReceiveMessage<String> {
                 MimeMultipart mimeMultipart = (MimeMultipart) msg[i].getContent();
 
                 LogInfo.e("1内容：" + mimeMultipart.getBodyPart(0).getContent());
+
+                LogInfo.e("url : " + StringUtil.getUrl(mimeMultipart.getBodyPart(0).getContent().toString()));
 
 //                for (int k = 0; k < mimeMultipart.getCount(); k++) {
 //                    BodyPart part = mimeMultipart.getBodyPart(k);
@@ -108,5 +97,6 @@ public class JakartaReceiveMailImp implements ReceiveMessage<String> {
         }
 
     }
+
 
 }

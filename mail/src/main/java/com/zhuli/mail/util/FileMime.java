@@ -8,7 +8,7 @@ package com.zhuli.mail.util;
  */
 public class FileMime {
 
-    private static final String[][] MIME_MapTable = {
+    public static final String[][] MIME_MapTable = {
             //{后缀名， MIME类型}
             {".3gp", "video/3gpp"},
             {".apk", "application/vnd.android.package-archive"},
@@ -77,6 +77,5 @@ public class FileMime {
             {".zip", "application/x-zip-compressed"},
             {"", "*/*"}
     };
-
 
 }

@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -14,8 +13,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.zhuli.mail.adapter.FileItemAdapter;
-import com.zhuli.mail.file.DocumentProcessingFactory;
 import com.zhuli.mail.file.CallbackProcessingListener;
+import com.zhuli.mail.file.DocumentProcessingFactory;
+import com.zhuli.mail.mail.LogInfo;
 import com.zhuli.mail.util.PathUtil;
 
 import java.util.ArrayList;
@@ -27,6 +27,7 @@ import java.util.List;
  */
 public class UnzipActivity extends AppCompatActivity {
 
+    public final static String UNZIP_ACTION = "android.intent.action.com.unzip";
     public final String FILE_PATH = "FILE_PATH";
 
     private TextView textView;
@@ -56,37 +57,57 @@ public class UnzipActivity extends AppCompatActivity {
         adapter = new FileItemAdapter(new ArrayList<>(), new ArrayList<>());
         linearLayout.setAdapter(adapter);
 
-        Intent intent = getIntent();
-        String action = intent.getAction();
-        if (Intent.ACTION_VIEW.equals(action)) {
-            List<String> str = PathUtil.getPaths(UnzipActivity.this, intent);//Uri.decode(uri.getEncodedPath());
-            unzipPath.setValue(str.get(0));
-        }
-
         DocumentProcessingFactory.init(this, (CallbackProcessingListener<List<String>>) t -> {
             adapter.updateData(t);
             Toast.makeText(UnzipActivity.this, "文件处理完毕！", Toast.LENGTH_SHORT).show();
         });
 
-        //处理其他程序传来的文件地址
-        final String path = getIntent().getStringExtra(FILE_PATH);
-        if (path != null && !path.equals("")) {
-            unzipPath.setValue(path);
-            DocumentProcessingFactory.setFilePath(path);
-        }
+        initIntent(getIntent());
+
     }
 
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        initIntent(intent);
     }
 
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    /**
+     * 初始化Intent
+     *
+     * @param intent
+     */
+    private void initIntent(Intent intent) {
+
+        switch (intent.getAction()) {
+            case Intent.ACTION_VIEW:
+                List<String> str = PathUtil.getPaths(UnzipActivity.this, intent);//Uri.decode(uri.getEncodedPath());
+                unzipPath.setValue(str.get(0));
+                break;
+
+            case Intent.ACTION_SEND:
+                List<String> strs = PathUtil.getPaths(UnzipActivity.this, intent);//Uri.decode(uri.getEncodedPath());
+                for (String itemPath : strs) {
+                    LogInfo.e(itemPath);
+                }
+                break;
+
+            case UnzipActivity.UNZIP_ACTION:
+                //处理其他程序传来的文件地址
+                final String path = getIntent().getStringExtra(FILE_PATH);
+                if (path != null && !path.equals("")) {
+                    unzipPath.setValue(path);
+                    DocumentProcessingFactory.setFilePath(path);
+                }
+                break;
+
+            default:
+                break;
+        }
     }
+
 
     public void onUnzip(View view) {
         DocumentProcessingFactory.setFilePath(unzipPath.getValue());

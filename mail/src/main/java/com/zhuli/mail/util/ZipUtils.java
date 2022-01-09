@@ -1,5 +1,6 @@
 package com.zhuli.mail.util;
 
+import com.zhuli.mail.file.TaskWaiting;
 import com.zhuli.mail.mail.LogInfo;
 
 import java.io.BufferedInputStream;
@@ -14,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
@@ -29,6 +32,9 @@ public final class ZipUtils {
 
     private static final int BUFFER_LEN = 8192;
 
+    //单个核线的fixed
+    private static final ExecutorService executor = Executors.newSingleThreadExecutor();
+
     private ZipUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
     }
@@ -41,9 +47,8 @@ public final class ZipUtils {
      * @return {@code true}: success<br>{@code false}: fail
      * @throws IOException if an I/O error has occurred
      */
-    public static boolean zipFiles(final Collection<String> srcFiles,
-                                   final String zipFilePath)
-            throws IOException {
+    public static TaskWaiting zipFiles(final Collection<String> srcFiles,
+                                       final String zipFilePath) {
         return zipFiles(srcFiles, zipFilePath, null);
     }
 
@@ -56,67 +61,41 @@ public final class ZipUtils {
      * @return {@code true}: success<br>{@code false}: fail
      * @throws IOException if an I/O error has occurred
      */
-    public static boolean zipFiles(final Collection<String> srcFilePaths,
-                                   final String zipFilePath,
-                                   final String comment)
-            throws IOException {
-        if (srcFilePaths == null || zipFilePath == null) return false;
-        ZipOutputStream zos = null;
-        try {
-            zos = new ZipOutputStream(new FileOutputStream(zipFilePath));
-            for (String srcFile : srcFilePaths) {
-                if (!zipFile(getFileByPath(srcFile), "", zos, comment)) return false;
-            }
-            return true;
-        } finally {
-            if (zos != null) {
-                zos.finish();
-                zos.close();
-            }
+    public static TaskWaiting zipFiles(final Collection<String> srcFilePaths,
+                                       final String zipFilePath,
+                                       final String comment) {
+        //等待任务
+        TaskWaiting task = new TaskWaiting();
+
+        if (srcFilePaths == null || zipFilePath == null) {
+            task.getHandler().sendEmptyMessage(404);
         }
+
+        executor.execute(() -> {
+            try {
+                ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFilePath));
+                try {
+                    for (String srcFile : srcFilePaths) {
+                        if (!zipFile(getFileByPath(srcFile), "", zos, comment)) {
+                            task.getHandler().sendEmptyMessage(404);
+                        }
+                    }
+                    task.getHandler().sendEmptyMessage(200);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    zos.finish();
+                    zos.close();
+                    task.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        return task;
     }
 
-    /**
-     * Zip the files.
-     *
-     * @param srcFiles The source of files.
-     * @param zipFile  The ZIP file.
-     * @return {@code true}: success<br>{@code false}: fail
-     * @throws IOException if an I/O error has occurred
-     */
-    public static boolean zipFiles(final Collection<File> srcFiles, final File zipFile)
-            throws IOException {
-        return zipFiles(srcFiles, zipFile, null);
-    }
-
-    /**
-     * Zip the files.
-     *
-     * @param srcFiles The source of files.
-     * @param zipFile  The ZIP file.
-     * @param comment  The comment.
-     * @return {@code true}: success<br>{@code false}: fail
-     * @throws IOException if an I/O error has occurred
-     */
-    public static boolean zipFiles(final Collection<File> srcFiles,
-                                   final File zipFile,
-                                   final String comment)
-            throws IOException {
-        if (srcFiles == null || zipFile == null) return false;
-        ZipOutputStream zos = null;
-        try {
-            zos = new ZipOutputStream(new FileOutputStream(zipFile));
-            for (File srcFile : srcFiles) {
-                if (!zipFile(srcFile, "", zos, comment)) return false;
-            }
-            return true;
-        } finally {
-            if (zos != null) {
-                zos.finish();
-                zos.close();
-            }
-        }
-    }
 
     /**
      * Zip the file.
@@ -126,9 +105,7 @@ public final class ZipUtils {
      * @return {@code true}: success<br>{@code false}: fail
      * @throws IOException if an I/O error has occurred
      */
-    public static boolean zipFile(final String srcFilePath,
-                                  final String zipFilePath)
-            throws IOException {
+    public static TaskWaiting zipFile(final String srcFilePath, final String zipFilePath) {
         return zipFile(getFileByPath(srcFilePath), getFileByPath(zipFilePath), null);
     }
 
@@ -141,26 +118,10 @@ public final class ZipUtils {
      * @return {@code true}: success<br>{@code false}: fail
      * @throws IOException if an I/O error has occurred
      */
-    public static boolean zipFile(final String srcFilePath,
-                                  final String zipFilePath,
-                                  final String comment)
-            throws IOException {
+    public static TaskWaiting zipFile(final String srcFilePath, final String zipFilePath, final String comment) {
         return zipFile(getFileByPath(srcFilePath), getFileByPath(zipFilePath), comment);
     }
 
-    /**
-     * Zip the file.
-     *
-     * @param srcFile The source of file.
-     * @param zipFile The ZIP file.
-     * @return {@code true}: success<br>{@code false}: fail
-     * @throws IOException if an I/O error has occurred
-     */
-    public static boolean zipFile(final File srcFile,
-                                  final File zipFile)
-            throws IOException {
-        return zipFile(srcFile, zipFile, null);
-    }
 
     /**
      * Zip the file.
@@ -171,21 +132,37 @@ public final class ZipUtils {
      * @return {@code true}: success<br>{@code false}: fail
      * @throws IOException if an I/O error has occurred
      */
-    public static boolean zipFile(final File srcFile,
-                                  final File zipFile,
-                                  final String comment)
-            throws IOException {
-        if (srcFile == null || zipFile == null) return false;
-        ZipOutputStream zos = null;
-        try {
-            zos = new ZipOutputStream(new FileOutputStream(zipFile));
-            return zipFile(srcFile, "", zos, comment);
-        } finally {
-            if (zos != null) {
-                zos.close();
-            }
+    public static TaskWaiting zipFile(final File srcFile, final File zipFile, final String comment) {
+        //等待任务
+        TaskWaiting task = new TaskWaiting();
+
+        if (srcFile == null || zipFile == null) {
+            task.getHandler().sendEmptyMessage(404);
         }
+
+        executor.execute(() -> {
+            ZipOutputStream zos = null;
+            try {
+                zos = new ZipOutputStream(new FileOutputStream(zipFile));
+                if (!zipFile(srcFile, "", zos, comment)) {
+                    task.getHandler().sendEmptyMessage(400);
+                }
+                task.getHandler().sendEmptyMessage(200);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (zos != null) {
+                    try {
+                        zos.close();
+                    } catch (IOException ignored) {
+                    }
+                }
+            }
+        });
+
+        return task;
     }
+
 
     private static boolean zipFile(final File srcFile,
                                    String rootPath,
@@ -218,6 +195,9 @@ public final class ZipUtils {
                     zos.write(buffer, 0, len);
                 }
                 zos.closeEntry();
+            } catch (Exception e) {
+
+                return false;
             } finally {
                 if (is != null) {
                     is.close();
@@ -377,7 +357,8 @@ public final class ZipUtils {
         ZipFile zip = new ZipFile(zipFile);
         Enumeration<?> entries = zip.entries();
         while (entries.hasMoreElements()) {
-            String entryName = ((ZipEntry) entries.nextElement()).getName().replace("\\", "/");;
+            String entryName = ((ZipEntry) entries.nextElement()).getName().replace("\\", "/");
+            ;
             if (entryName.contains("../")) {
                 LogInfo.e("entryName: " + entryName + " is dangerous!");
                 paths.add(entryName);
@@ -451,4 +432,5 @@ public final class ZipUtils {
         }
         return true;
     }
+
 }

@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.zhuli.mail.adapter.FileItemAdapter;
 import com.zhuli.mail.file.DocumentProcessingFactory;
-import com.zhuli.mail.file.FileProcessingCompleteListener;
+import com.zhuli.mail.file.CallbackProcessingListener;
 import com.zhuli.mail.util.PathUtil;
 
 import java.util.ArrayList;
@@ -63,14 +63,9 @@ public class UnzipActivity extends AppCompatActivity {
             unzipPath.setValue(str.get(0));
         }
 
-        DocumentProcessingFactory.init(this, new FileProcessingCompleteListener() {
-            @Override
-            public <T> void onComplete(T t) {
-                if (t instanceof List) {
-                    adapter.updateData((List<String>) t);
-                    Toast.makeText(UnzipActivity.this, "文件处理完毕！", Toast.LENGTH_SHORT).show();
-                }
-            }
+        DocumentProcessingFactory.init(this, (CallbackProcessingListener<List<String>>) t -> {
+            adapter.updateData(t);
+            Toast.makeText(UnzipActivity.this, "文件处理完毕！", Toast.LENGTH_SHORT).show();
         });
 
         //处理其他程序传来的文件地址

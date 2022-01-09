@@ -14,10 +14,22 @@ import java.util.Properties;
 public class MailInfo {
 
     // 发送邮件的服务器的IP
-    private String mailServerHost;
+    private String mailServerSendHost;
 
     // 发送邮件的服务器的端口
-    private String mailServerPort;
+    private String mailServerSendPort;
+
+    // 接收邮件的服务器的IP
+    private String mailServerReceiveHost;
+
+    // 接收邮件的服务器的端口
+    private String mailServerReceivePort;
+
+    // 邮件发送协议
+    private String transportProtocol;
+
+    // 邮箱接收协议
+    private String storeProtocol;
 
     // 邮件发送者的地址
     private String fromAddress;
@@ -43,20 +55,36 @@ public class MailInfo {
     // 邮件附件的文件名
     private List<File> attachFiles;
 
-    public String getMailServerHost() {
-        return mailServerHost;
+    public String getMailServerSendHost() {
+        return mailServerSendHost;
     }
 
-    public void setMailServerHost(String mailServerHost) {
-        this.mailServerHost = mailServerHost;
+    public void setMailServerSendHost(String mailServerSendHost) {
+        this.mailServerSendHost = mailServerSendHost;
     }
 
-    public String getMailServerPort() {
-        return mailServerPort;
+    public String getMailServerSendPort() {
+        return mailServerSendPort;
     }
 
-    public void setMailServerPort(String mailServerPort) {
-        this.mailServerPort = mailServerPort;
+    public void setMailServerSendPort(String mailServerSendPort) {
+        this.mailServerSendPort = mailServerSendPort;
+    }
+
+    public String getMailServerReceiveHost() {
+        return mailServerReceiveHost;
+    }
+
+    public void setMailServerReceiveHost(String mailServerReceiveHost) {
+        this.mailServerReceiveHost = mailServerReceiveHost;
+    }
+
+    public String getMailServerReceivePort() {
+        return mailServerReceivePort;
+    }
+
+    public void setMailServerReceivePort(String mailServerReceivePort) {
+        this.mailServerReceivePort = mailServerReceivePort;
     }
 
     public boolean isValidate() {
@@ -81,6 +109,22 @@ public class MailInfo {
 
     public void setFromAddress(String fromAddress) {
         this.fromAddress = fromAddress;
+    }
+
+    public String getTransportProtocol() {
+        return transportProtocol;
+    }
+
+    public void setTransportProtocol(String transportProtocol) {
+        this.transportProtocol = transportProtocol;
+    }
+
+    public String getStoreProtocol() {
+        return storeProtocol;
+    }
+
+    public void setStoreProtocol(String storeProtocol) {
+        this.storeProtocol = storeProtocol;
     }
 
     public String getPassword() {
@@ -133,24 +177,50 @@ public class MailInfo {
     }
 
     /**
-     * 获得邮件会话属性
+     * 获得发送邮件会话属性
      */
-    public Properties getProperties() {
+    public Properties getSendProperties() {
         Properties props = new Properties();
         // 发送主机
-        props.put("mail.smtp.host", getMailServerHost());
+        props.put("mail.smtp.host", getMailServerSendHost());
         // 发送服务器端口
-        props.put("mail.smtp.port", getMailServerPort());
+        props.put("mail.smtp.port", getMailServerSendPort());
         // 需要授权
         props.put("mail.smtp.auth", isValidate());
         // 发送者邮箱
         props.put("mail.smtp.user", getUserName());
         // 发送者邮箱授权码
         props.put("mail.smtp.pass", getPassword());
-        // 使用ssl
+        // 指定邮件发送协议  只接受邮件是可以不要写的
+        props.put("mail.transport.protocol", getTransportProtocol());
+        // 开启认证
         props.put("mail.smtp.ssl", true);
         // 使用ssl
         props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        return props;
+    }
+
+    /**
+     * 获得接收邮件会话属性
+     */
+    public Properties getReceiveProperties() {
+        Properties props = new Properties();
+        // 发送主机
+        props.put("mail.imap.host", getMailServerReceiveHost());
+        // 发送服务器端口
+        props.put("mail.imap.port", getMailServerReceivePort());
+        // 需要授权
+        props.put("mail.imap.auth", isValidate());
+        // 发送者邮箱
+        props.put("mail.imap.user", getUserName());
+        // 发送者邮箱授权码
+        props.put("mail.imap.pass", getPassword());
+        // 指定邮件发送协议  只接受邮件是可以不要写的
+        props.put("mail.store.protocol", getStoreProtocol());
+        // 开启认证
+        props.put("mail.imap.ssl", true);
+        // 使用ssl
+        props.put("mail.imap.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         return props;
     }
 

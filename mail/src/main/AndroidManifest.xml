@@ -64,8 +64,6 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-
-
         <receiver android:name=".receiver.WifiBroadcastReceiver">
             <intent-filter>
                 <!--监听wifi是开关变化的状态-->

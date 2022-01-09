@@ -16,7 +16,7 @@ import java.util.List;
 public class ProcessingZipFile implements ActingProcessing {
 
     @Override
-    public void startProcessingFile(String path, FileProcessingCompleteListener listener) {
+    public void startProcessingFile(String path, CallbackProcessingListener listener) {
         try {
             List<String> unzipPaths = new ArrayList<>();
             String[] paths = path.split("/");

@@ -24,13 +24,13 @@ import jakarta.mail.internet.MimeMultipart;
  * Description:
  * Author: zl
  */
-public class JakartaMailImp implements MailSend {
+public class JakartaSendMailImp implements SendMessage<MailInfo> {
 
     private ICallback callback;
 
-    public JakartaMailImp() { }
+    public JakartaSendMailImp() { }
 
-    public JakartaMailImp(ICallback callback) {
+    public JakartaSendMailImp(ICallback callback) {
         this.callback = callback;
     }
 
@@ -38,7 +38,7 @@ public class JakartaMailImp implements MailSend {
     public void send(MailInfo info) {
 
         try {
-            Properties props = info.getProperties();
+            Properties props = info.getSendProperties();
             // 创建会话
             Session session = Session.getInstance(props, new Authenticator() {
                 @Override

@@ -6,8 +6,8 @@ package com.zhuli.mail.file;
  * Description: 文件代理处理器
  * Author: zl
  */
-public interface ActingProcessing {
+public interface ActingProcessing<T> {
 
-    void startProcessingFile(String path, FileProcessingCompleteListener listener);
+    void startProcessingFile(String path, CallbackProcessingListener<T> listener);
 
 }

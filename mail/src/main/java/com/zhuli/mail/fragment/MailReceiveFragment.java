@@ -76,9 +76,10 @@ public class MailReceiveFragment extends Fragment implements SwipeRefreshLayout.
         WebDownloadView downloadView = new WebDownloadView(getContext());
         //相对某个控件的位置，有偏移;xoff表示x轴的偏移，正值表示向左，负值表示向右；yoff表示相对y轴的偏移，正值是向下，负值是向上；
         downloadView.showAsDropDown(refreshableView, 0, 500);
-        downloadView.showAtLocation(refreshableView,Gravity.BOTTOM,0,200);
+        downloadView.showAtLocation(refreshableView, Gravity.BOTTOM, 0, 200);
         downloadView.setAnimationStyle(R.style.PictureThemeWindowStyle);
 
+        //TODO 弹窗上移
     }
 
 

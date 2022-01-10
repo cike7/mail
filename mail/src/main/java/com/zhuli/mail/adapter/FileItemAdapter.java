@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.zhuli.mail.R;
 import com.zhuli.mail.mail.LogInfo;
 import com.zhuli.mail.util.PathUtil;
-import com.zhuli.mail.widget.FileImgView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +27,7 @@ import java.util.concurrent.Executors;
  * Description:
  * Author: zl
  */
-public class FileItemAdapter extends RecyclerView.Adapter<FileItemViewViewHolder> {
+public class FileItemAdapter extends RecyclerView.Adapter<FileItemViewHolder> {
 
     private final ExecutorService executors = Executors.newCachedThreadPool();
 
@@ -43,13 +42,13 @@ public class FileItemAdapter extends RecyclerView.Adapter<FileItemViewViewHolder
 
     @NonNull
     @Override
-    public FileItemViewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        FileImgView view = new FileImgView(parent.getContext());
-        return new FileItemViewViewHolder(view);
+    public FileItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_file, parent, false);
+        return new FileItemViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(FileItemViewViewHolder holder, int position) {
+    public void onBindViewHolder(FileItemViewHolder holder, int position) {
         if (names != null && names.size() > 0) {
             if (bitmaps != null && bitmaps.size() > 0) {
                 holder.bindData(names.get(position), bitmaps.get(position));
@@ -99,7 +98,7 @@ public class FileItemAdapter extends RecyclerView.Adapter<FileItemViewViewHolder
                 for (int i = 0; i < filePaths.size(); i++) {
                     String[] filePath = filePaths.get(i).split("/");
                     names.add(filePath[filePath.length - 1]);
-                    bitmaps.add(PathUtil.getImageThumbnail(filePaths.get(i), 100, 100));
+                    bitmaps.add(PathUtil.getImageThumbnail(filePaths.get(i), 250, 250));
                 }
                 handler.sendEmptyMessage(0);
             }

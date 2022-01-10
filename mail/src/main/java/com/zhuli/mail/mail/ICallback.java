@@ -6,6 +6,6 @@ package com.zhuli.mail.mail;
  * Description:
  * Author: zl
  */
-public interface ICallback {
-    <T> void onCall(T t);
+public interface ICallback<T> {
+    void onCall(T t);
 }

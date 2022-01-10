@@ -1,60 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".MailActivity">
 
-    <EditText
-        android:id="@+id/toAddEt"
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/page_mail_view"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:gravity="center"
-        android:hint="接收方的邮箱地址"
-        android:text="zhuli@toprand.com" />
+        android:layout_height="match_parent"/>
 
-    <Button
-        android:id="@+id/but_mail_send"
-        android:layout_width="300dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:layout_gravity="center"
-        android:onClick="sendFileMail"
-        android:text="发送邮件" />
-
-    <LinearLayout
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/but_get_file"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:onClick="getFile"
-            android:text="添加附件" />
-
-        <Button
-            android:id="@+id/but_compression_file"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:onClick="compressionFile"
-            android:text="文件压缩.zip" />
-
-    </LinearLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_files_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginHorizontal="30dp"
-        android:layout_marginVertical="20dp"
-        android:orientation="vertical" />
-
-</LinearLayout>
+</FrameLayout>

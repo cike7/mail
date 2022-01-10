@@ -16,7 +16,7 @@ public class TaskWaiting {
 
     private Handler handler;
 
-    private FileProcessingCompleteListener listener;
+    private CallbackProcessingListener listener;
 
     public TaskWaiting() {
         handler = new Handler(Looper.getMainLooper()) {
@@ -30,7 +30,7 @@ public class TaskWaiting {
         };
     }
 
-    public void setListener(FileProcessingCompleteListener listener) {
+    public void setListener(CallbackProcessingListener listener) {
         this.listener = listener;
     }
 

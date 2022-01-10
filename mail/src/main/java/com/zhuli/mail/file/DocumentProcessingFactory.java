@@ -2,6 +2,8 @@ package com.zhuli.mail.file;
 
 import android.content.Context;
 
+import java.util.List;
+
 /**
  * Copyright (C) 王字旁的理
  * Date: 2021/12/30
@@ -10,7 +12,7 @@ import android.content.Context;
  */
 public class DocumentProcessingFactory {
 
-    private FileProcessingCompleteListener listener;
+    private CallbackProcessingListener listener;
 
     private Context mContext;
 
@@ -20,7 +22,7 @@ public class DocumentProcessingFactory {
         mContext = context;
     }
 
-    public static void init(Context context, FileProcessingCompleteListener listener) {
+    public static void init(Context context, CallbackProcessingListener listener) {
         if (instance == null) {
             instance = new DocumentProcessingFactory(context);
         }
@@ -39,7 +41,7 @@ public class DocumentProcessingFactory {
             return;
         }
 
-        ActingProcessing imp;
+        ActingProcessing<List<String>> imp;
 
         if (filePath.equals(".apk")) {
             imp = new ProcessingApkFile(instance.mContext);

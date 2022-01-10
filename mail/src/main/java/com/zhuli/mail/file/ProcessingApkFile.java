@@ -24,7 +24,7 @@ public class ProcessingApkFile implements ActingProcessing {
     }
 
     @Override
-    public void startProcessingFile(String path, FileProcessingCompleteListener listener) {
+    public void startProcessingFile(String path, CallbackProcessingListener listener) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         Uri uri;
         // 判断版本大于等于7.0

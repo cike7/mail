@@ -24,13 +24,14 @@ import jakarta.mail.internet.MimeMultipart;
  * Description:
  * Author: zl
  */
-public class JakartaMailImp implements MailSend {
+public class JakartaSendMailImp implements SendMessage<MailInfo> {
 
-    private ICallback callback;
+    private ICallback<String> callback;
 
-    public JakartaMailImp() { }
+    public JakartaSendMailImp() {
+    }
 
-    public JakartaMailImp(ICallback callback) {
+    public JakartaSendMailImp(ICallback<String> callback) {
         this.callback = callback;
     }
 
@@ -38,7 +39,7 @@ public class JakartaMailImp implements MailSend {
     public void send(MailInfo info) {
 
         try {
-            Properties props = info.getProperties();
+            Properties props = info.getSendProperties();
             // 创建会话
             Session session = Session.getInstance(props, new Authenticator() {
                 @Override
@@ -70,6 +71,7 @@ public class JakartaMailImp implements MailSend {
             MimeMultipart mp = new MimeMultipart();
             // 设置邮件正文
             mp.addBodyPart(text);
+            mp.setSubType("mixed");
             // 附件
             if (info.getAttachFiles().size() > 0) {
                 // 创建邮件附件
@@ -78,7 +80,6 @@ public class JakartaMailImp implements MailSend {
                     attach.attachFile(file);
                     mp.addBodyPart(attach);
                 }
-                mp.setSubType("mixed");
             }
             msg.setContent(mp);
             msg.setSentDate(new Date());

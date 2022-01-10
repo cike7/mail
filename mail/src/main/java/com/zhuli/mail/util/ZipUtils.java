@@ -1,13 +1,5 @@
 package com.zhuli.mail.util;
 
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Looper;
-import android.os.Message;
-
-import androidx.annotation.NonNull;
-
-import com.zhuli.mail.file.FileProcessingCompleteListener;
 import com.zhuli.mail.file.TaskWaiting;
 import com.zhuli.mail.mail.LogInfo;
 
@@ -15,7 +7,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -153,7 +144,10 @@ public final class ZipUtils {
             ZipOutputStream zos = null;
             try {
                 zos = new ZipOutputStream(new FileOutputStream(zipFile));
-                zipFile(srcFile, "", zos, comment);
+                if (!zipFile(srcFile, "", zos, comment)) {
+                    task.getHandler().sendEmptyMessage(400);
+                }
+                task.getHandler().sendEmptyMessage(200);
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -161,7 +155,6 @@ public final class ZipUtils {
                     try {
                         zos.close();
                     } catch (IOException ignored) {
-
                     }
                 }
             }
@@ -202,6 +195,9 @@ public final class ZipUtils {
                     zos.write(buffer, 0, len);
                 }
                 zos.closeEntry();
+            } catch (Exception e) {
+
+                return false;
             } finally {
                 if (is != null) {
                     is.close();

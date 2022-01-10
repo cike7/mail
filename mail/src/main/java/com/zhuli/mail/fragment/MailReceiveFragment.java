@@ -1,14 +1,18 @@
 package com.zhuli.mail.fragment;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -38,6 +42,7 @@ public class MailReceiveFragment extends Fragment implements SwipeRefreshLayout.
     private SwipeRefreshLayout refreshableView;
     private ListView listView;
     private FragmentReceiveViewModel viewModel;
+    private WebDownloadView downloadLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,27 +65,25 @@ public class MailReceiveFragment extends Fragment implements SwipeRefreshLayout.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_mail_receive, container, false);
-        refreshableView = root.findViewById(R.id.swipe_refresh_receive_layout);
-        listView = root.findViewById(R.id.list_receive_layout);
 
+        View view = inflater.inflate(R.layout.fragment_mail_receive, container, false);
+
+        refreshableView = view.findViewById(R.id.swipe_refresh_receive_layout);
+        listView = view.findViewById(R.id.list_receive_layout);
+        downloadLayout = view.findViewById(R.id.frame_download_layout);
         refreshableView.setOnRefreshListener(this);
-
         listView.setAdapter(viewModel.getAdapter());
         listView.setOnItemClickListener(this);
-        return root;
+        return view;
     }
 
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        WebDownloadView downloadView = new WebDownloadView(getContext());
-        //相对某个控件的位置，有偏移;xoff表示x轴的偏移，正值表示向左，负值表示向右；yoff表示相对y轴的偏移，正值是向下，负值是向上；
-        downloadView.showAsDropDown(refreshableView, 0, 500);
-        downloadView.showAtLocation(refreshableView, Gravity.BOTTOM, 0, 200);
-        downloadView.setAnimationStyle(R.style.PictureThemeWindowStyle);
+        //        String url = "https://www.icloud.com/attachment/?u=https%3A%2F%2Fcvws.icloud-content.com%2FB%2FAXEh4BE-iF5vcfnarAVOVYqawFJbAbMhbSkX-QlQnI5_3RNbuhqfH__W%2F%24%7Bf%7D%3Fo%3DAn0TMsKeH-colLDMedGE7m1tW9IbBBUK1lhOuu3exJPB%26v%3D1%26x%3D3%26a%3DCAogCGac-_mYoh4qsMjBVyRGS0VlG8HhxyR_GBBieN6EdlQSehCJ_oLX4y8YiY7-qu0vIgEAKgkC6AMA_wj_lI1SBJrAUltaBJ8f_9ZqJwBflRqI5OmKiLVSDlPLD7kYfIBsbQtsIn5H0boh-sqGqdpBP5HE7nInJRJvLTpu7kz-AyLAmm92qBRdQEYOm52IKJzGP5ESetg1pmCxv1De%26e%3D1644257314%26fl%3D%26r%3D54EE7538-5C59-4A70-9607-A0ED6886D5C1-1%26k%3D%24%7Buk%7D%26ckc%3Dcom.apple.largeattachment%26ckz%3D61315739-26D5-4268-B154-0C05337B07E3%26p%3D52%26s%3DSbnprN4aOkxJN7fWAkggRcOPv8o&uk=DbCf7HWscHzCy5P9S0RfyA&f=OPPO-GOlf-EN-APK-1.0-202201071407.apk&sz=25405521";
+        String url = "https://qiye.aliyun.com/alimail/openLinks/downloadMimeMetaDiskBigAttach?id=netdiskid%3Av001%3Afile%3ADzzzzzzNqYC%3BOnqg0AtYuYaXRvNTRJ5F2ho3XRdl6eIIZdro5pRpVnX4YDQizm%2BbN65EXLWK5jJfJ9wqVGjl21r%2Fzxp6zyXztV3Plpx6%2FykcCJB81hXuSMJdpGXGNd46Mg%3D%3D ";
 
-        //TODO 弹窗上移
+        downloadLayout.open(url);
     }
 
 

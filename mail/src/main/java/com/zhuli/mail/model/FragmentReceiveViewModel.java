@@ -3,13 +3,10 @@ package com.zhuli.mail.model;
 import android.graphics.Color;
 import android.widget.TextView;
 
-import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.zhuli.mail.adapter.FileItemAdapter;
 import com.zhuli.mail.adapter.MsgItemAdapter;
 import com.zhuli.mail.mail.ICallback;
-import com.zhuli.mail.view.WebDownloadView;
 
 import java.util.ArrayList;
 import java.util.List;

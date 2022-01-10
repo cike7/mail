@@ -44,6 +44,7 @@ public class FileItemAdapter extends RecyclerView.Adapter<FileItemViewHolder> {
     @Override
     public FileItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_file, parent, false);
+        view.setLayoutParams(new ViewGroup.LayoutParams(210, 300));
         return new FileItemViewHolder(view);
     }
 
@@ -98,7 +99,7 @@ public class FileItemAdapter extends RecyclerView.Adapter<FileItemViewHolder> {
                 for (int i = 0; i < filePaths.size(); i++) {
                     String[] filePath = filePaths.get(i).split("/");
                     names.add(filePath[filePath.length - 1]);
-                    bitmaps.add(PathUtil.getImageThumbnail(filePaths.get(i), 250, 250));
+                    bitmaps.add(PathUtil.getImageThumbnail(filePaths.get(i), 200, 200));
                 }
                 handler.sendEmptyMessage(0);
             }

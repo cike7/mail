@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.zhuli.mail.MailEntrustManage;
 import com.zhuli.mail.R;
+import com.zhuli.mail.mail.LogInfo;
 import com.zhuli.mail.model.FragmentSendViewModel;
 import com.zhuli.mail.util.IntentUtil;
 import com.zhuli.mail.util.PathUtil;
@@ -99,7 +100,10 @@ public class MailSendFragment extends Fragment implements View.OnClickListener {
 
         recyclerView = root.findViewById(R.id.recycler_files_layout);
 
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 6));
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 4));
+
+        LogInfo.e("widthPixels : " + root.getResources().getDisplayMetrics().widthPixels / 210);
+
         recyclerView.setAdapter(viewModel.getAdapter());
 
         return root;

@@ -13,17 +13,20 @@ import java.util.List;
  * Description:
  * Author: zl
  */
-public class ProcessingZipFile implements ActingProcessing {
+public class ProcessingZipFile implements ActingProcessing<List<String>> {
 
     @Override
-    public void startProcessingFile(String path, CallbackProcessingListener listener) {
+    public void startProcessingFile(String path, CallbackProcessingListener<List<String>> listener) {
         try {
             List<String> unzipPaths = new ArrayList<>();
             String[] paths = path.split("/");
             //在原文件目录下新建文件夹，去掉后缀名
             String destDirPath = path.replace(".zip", "");
-            new File(destDirPath).delete();
-            new File(destDirPath).mkdir();
+            File file = new File(destDirPath);
+            if (file.exists()) {
+                file.delete();
+            }
+            file.mkdir();
             List<File> files = ZipUtils.unzipFile(path, destDirPath);
             StringBuilder stringBuffer = new StringBuilder();
             for (int i = 0; i < paths.length - 1; i++) {

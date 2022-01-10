@@ -1,6 +1,5 @@
 package com.zhuli.mail.view;
 
-import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.content.Context;
@@ -12,9 +11,6 @@ import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.TranslateAnimation;
 import android.webkit.DownloadListener;
 import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;

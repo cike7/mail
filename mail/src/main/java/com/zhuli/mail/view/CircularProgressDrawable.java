@@ -16,8 +16,6 @@
 
 package com.zhuli.mail.view;
 
-import static androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP;
-
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -40,11 +38,12 @@ import android.view.animation.LinearInterpolator;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
-import androidx.core.util.Preconditions;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
+import static androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 
 /**
  * Drawable that renders the animated indeterminate progress indicator in the Material design style

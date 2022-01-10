@@ -1,10 +1,7 @@
 package com.zhuli.mail.adapter;
 
 import android.graphics.Bitmap;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,11 +32,8 @@ public class FileItemViewHolder extends RecyclerView.ViewHolder {
         if (bitmap != null) {
             imageView.setImageBitmap(bitmap);
         } else {
-            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.gravity = Gravity.CENTER;
-            textView.setLayoutParams(params);
             textView.setAlpha(1);
-            imageView.setImageResource(R.drawable.ic_drive_file_24);
+            imageView.setImageResource(R.mipmap.ic_drive_file);
         }
     }
 

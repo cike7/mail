@@ -32,7 +32,7 @@ public class UnzipActivity extends AppCompatActivity {
 
     private TextView textView;
     private MutableLiveData<String> unzipPath;
-    private RecyclerView linearLayout;
+    private RecyclerView recyclerView;
     private FileItemAdapter adapter;
 
 
@@ -41,7 +41,7 @@ public class UnzipActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_unzip);
 
-        linearLayout = findViewById(R.id.recycler_files_layout);
+        recyclerView = findViewById(R.id.recycler_files_layout);
         textView = findViewById(R.id.text_zip_file_path);
 
         unzipPath = new MutableLiveData<>();
@@ -53,9 +53,9 @@ public class UnzipActivity extends AppCompatActivity {
             }
         });
 
-        linearLayout.setLayoutManager(new GridLayoutManager(this, 6));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 5));
         adapter = new FileItemAdapter(new ArrayList<>(), new ArrayList<>());
-        linearLayout.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);
 
         DocumentProcessingFactory.init(this, (CallbackProcessingListener<List<String>>) t -> {
             adapter.updateData(t);

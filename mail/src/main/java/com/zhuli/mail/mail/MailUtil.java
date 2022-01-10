@@ -34,7 +34,7 @@ public class MailUtil {
         mailManage.send(toAdd, files);
     }
 
-    public static void receive(CallbackProcessingListener<String> callback) {
+    public static void receive(CallbackProcessingListener callback) {
         if (mailManage == null) return;
         mailManage.receive(callback);
     }

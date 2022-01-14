@@ -30,8 +30,12 @@ public class MailUtil {
     }
 
     public static void send(String toAdd, final List<File> files) {
+        send(toAdd, files, null);
+    }
+
+    public static void send(String toAdd, final List<File> files, ICallback<String> callback) {
         if (mailManage == null) return;
-        mailManage.send(toAdd, files);
+        mailManage.send(toAdd, files, callback);
     }
 
     public static void receive(CallbackProcessingListener callback) {

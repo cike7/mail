@@ -1,9 +1,5 @@
 package com.zhuli.mail.fragment;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -12,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -84,6 +79,7 @@ public class MailReceiveFragment extends Fragment implements SwipeRefreshLayout.
         String url = "https://qiye.aliyun.com/alimail/openLinks/downloadMimeMetaDiskBigAttach?id=netdiskid%3Av001%3Afile%3ADzzzzzzNqYC%3BOnqg0AtYuYaXRvNTRJ5F2ho3XRdl6eIIZdro5pRpVnX4YDQizm%2BbN65EXLWK5jJfJ9wqVGjl21r%2Fzxp6zyXztV3Plpx6%2FykcCJB81hXuSMJdpGXGNd46Mg%3D%3D ";
 
         downloadLayout.open(url);
+
     }
 
 

@@ -83,6 +83,7 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
+        <!--监听wifi-->
         <receiver android:name=".receiver.WifiBroadcastReceiver">
             <intent-filter>
                 <!--监听wifi是开关变化的状态-->
@@ -91,6 +92,15 @@
                 <action android:name="android.net.wifi.STATE_CHANGE" />
                 <!--监听wifi列表变化-->
                 <action android:name="android.net.wifi.SCAN_RESULTS" />
+            </intent-filter>
+        </receiver>
+
+        <!--监听下载-->
+        <receiver android:name=".receiver.DownloadCompleteReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+                <action android:name="android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED" />
+<!--                <action android:name="android.intent.action.VIEW_DOWNLOADS" />-->
             </intent-filter>
         </receiver>
 

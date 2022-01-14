@@ -5,22 +5,15 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.Environment;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.DownloadListener;
 import android.webkit.JavascriptInterface;
-import android.webkit.JsResult;
-import android.webkit.URLUtil;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -61,21 +54,36 @@ public class WebDownloadView extends FrameLayout {
         LayoutInflater.from(context).inflate(R.layout.view_web_download, this, true);
         titleLayout = findViewById(R.id.frame_download_title);
         webView = findViewById(R.id.web_download_view);
-        initWebView();
+        initWebView(context);
     }
 
+
+    private float moveSpeed;
+    private float moveStartTime;
+    private float startPos;
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
 
-        if (ev.getAction() == MotionEvent.ACTION_UP) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+
+            moveStartTime = System.currentTimeMillis();
+            startPos = ev.getRawY();
+
+        } else if (ev.getAction() == MotionEvent.ACTION_UP) {
+
+            moveSpeed = (ev.getRawY() - startPos) / (System.currentTimeMillis() - moveStartTime);
+
+            LogInfo.e("moveSpeed : " + moveSpeed);
+
             if (ev.getRawY() < titleLayout.getMeasuredHeight() && isOpen) {
-                open("");
+                open(null);
             }
         } else if (ev.getAction() == MotionEvent.ACTION_MOVE) {
-
             //拦截所有父控件Touch事件
             getParent().requestDisallowInterceptTouchEvent(true);
+
+
         }
         return super.dispatchTouchEvent(ev);
     }
@@ -89,7 +97,9 @@ public class WebDownloadView extends FrameLayout {
 
     public void open(String url) {
         anim.start();
-        webView.loadUrl(url);
+        if (url != null) {
+            webView.loadUrl(url);
+        }
     }
 
     private Animator getAnimatorDown(View view, float endValue) {
@@ -120,7 +130,7 @@ public class WebDownloadView extends FrameLayout {
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    private void initWebView() {
+    private void initWebView(Context context) {
 
         webView.addJavascriptInterface(this, "android");//添加js监听 这样html就能调用客户端
         webView.setWebViewClient(webViewClient);
@@ -128,7 +138,15 @@ public class WebDownloadView extends FrameLayout {
             @Override
             public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
                 LogInfo.e("开始下载：" + url);
-//                downloadBySystem(url, contentDisposition, mimetype);
+                sendDownloadBroadcast(url, userAgent, contentDisposition, mimetype, contentLength);
+
+//                //下载apk
+//                DownloadUtil downloadUtil = new DownloadUtil(context, null, url);
+//                //下载显示名字，不能是中文
+//                downloadUtil.setDownloadFileName("amzy.apk");//System.currentTimeMillis()
+//                downloadUtil.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+//                downloadUtil.start();
+
             }
         });
 
@@ -164,38 +182,6 @@ public class WebDownloadView extends FrameLayout {
 
     }
 
-    // 使用系统下载工具进行下载
-    private void downloadBySystem(String url, String contentDisposition, String mimeType) {
-        // 指定下载地址
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-        // 设置通知的显示类型，下载进行时和完成后显示通知
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        // 允许下载的网络类型（）
-        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
-        // 允许该记录在下载管理界面可见
-        request.setVisibleInDownloadsUi(true);
-        // 设置下载中通知栏标题
-        request.setTitle("文件更新下载");
-        // 设置下载中通知栏描述
-        request.setDescription("文件更新下载");
-        // 获得SD卡的读取权限（安卓6.0以上需要获取相应的权限）
-        // getSDPersimmion();
-        // 设置下载文件保存路径和路径文件名
-        String fileName = URLUtil.guessFileName(url, contentDisposition, mimeType);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
-        // 获得系统下载管理器
-        final DownloadManager downloadManager = (DownloadManager) getContext().getSystemService(getContext().DOWNLOAD_SERVICE);
-        // 添加一个下载任务
-        long downloadId = downloadManager.enqueue(request);
-
-        receiver = new DownloadCompleteReceiver();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-        getContext().registerReceiver(receiver, intentFilter);
-
-    }
-
-    DownloadCompleteReceiver receiver;
 
     //WebViewClient主要帮助WebView处理各种通知、请求事件
     private WebViewClient webViewClient = new WebViewClient() {
@@ -228,6 +214,30 @@ public class WebDownloadView extends FrameLayout {
     @JavascriptInterface //仍然必不可少
     public void getClient(String str) {
         LogInfo.e("html调用客户端:" + str);
+    }
+
+
+    DownloadCompleteReceiver receiver;
+
+    private void sendDownloadBroadcast(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
+
+        if (receiver == null) {
+            receiver = new DownloadCompleteReceiver();
+        }
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+        try {
+            intentFilter.addDataType(mimetype);
+        } catch (IntentFilter.MalformedMimeTypeException e) {
+            e.printStackTrace();
+        }
+        getContext().registerReceiver(receiver, intentFilter);
+
+    }
+
+    public void releaseBroadcast() {
+        getContext().unregisterReceiver(receiver);
     }
 
 }

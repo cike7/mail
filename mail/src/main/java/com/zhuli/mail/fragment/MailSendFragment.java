@@ -1,8 +1,18 @@
 package com.zhuli.mail.fragment;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -17,20 +28,28 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.zhuli.mail.MailActivity;
 import com.zhuli.mail.MailEntrustManage;
 import com.zhuli.mail.R;
+import com.zhuli.mail.adapter.FileItemAdapter;
+import com.zhuli.mail.mail.ICallback;
 import com.zhuli.mail.mail.LogInfo;
 import com.zhuli.mail.model.FragmentSendViewModel;
+import com.zhuli.mail.receiver.ReceiveHandler;
 import com.zhuli.mail.util.IntentUtil;
+import com.zhuli.mail.util.LoadBitmapAsyncTask;
 import com.zhuli.mail.util.PathUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 
 public class MailSendFragment extends Fragment implements View.OnClickListener {
@@ -75,16 +94,14 @@ public class MailSendFragment extends Fragment implements View.OnClickListener {
 
         //发送
         root.findViewById(R.id.but_send_mail).setOnClickListener(this);
-
         //添加文件
         root.findViewById(R.id.but_get_file).setOnClickListener(this);
-
         //压缩文件
         root.findViewById(R.id.but_compression_file).setOnClickListener(this);
+        //上传等待界面
+        root.findViewById(R.id.frame_progress_bar_layout).setVisibility(View.GONE);
 
-        String[] items = new String[]{"aaaaaaaa", "bbb", "ccc", "zhuli@toprand.com"};
-        spinnerAdapter = new ArrayAdapter<>(root.getContext(), android.R.layout.simple_spinner_item, items);
-
+        spinnerAdapter = new ArrayAdapter<>(root.getContext(), R.layout.simple_spinner_item, viewModel.getUsrList());
         spinnerContact.setAdapter(spinnerAdapter);
         spinnerContact.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -99,11 +116,7 @@ public class MailSendFragment extends Fragment implements View.OnClickListener {
         });
 
         recyclerView = root.findViewById(R.id.recycler_files_layout);
-
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 4));
-
-        LogInfo.e("widthPixels : " + root.getResources().getDisplayMetrics().widthPixels / 210);
-
         recyclerView.setAdapter(viewModel.getAdapter());
 
         return root;
@@ -115,8 +128,17 @@ public class MailSendFragment extends Fragment implements View.OnClickListener {
 
         if (v.getId() == R.id.but_send_mail) { //发送
 
-            MailEntrustManage.sendFileMail(getContext(), editRecipient.getText().toString(), viewModel.getAdapter().getFilePaths());
-            viewModel.getAdapter().clear();
+
+//            getView().findViewById(R.id.frame_progress_bar_layout).setVisibility(View.VISIBLE);
+//
+//            MailEntrustManage.sendFileMail(editRecipient.getText().toString(), viewModel.getAdapter().getFilePaths(), new ICallback<String>() {
+//                @Override
+//                public void onCall(String s) {
+//                    Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
+//                    viewModel.getAdapter().clear();
+//                    getView().findViewById(R.id.frame_progress_bar_layout).setVisibility(View.GONE);
+//                }
+//            });
 
         } else if (v.getId() == R.id.but_get_file) { //打开文件选择器
 
@@ -136,7 +158,7 @@ public class MailSendFragment extends Fragment implements View.OnClickListener {
      */
     private void compressionFile() {
 
-        final Button butSend = getView().findViewById(R.id.but_send_mail);
+        final View butSend = getView().findViewById(R.id.but_send_mail);
         if (butSend != null) {
             butSend.setClickable(false);
             butSend.setAlpha(0.4f);
@@ -157,6 +179,8 @@ public class MailSendFragment extends Fragment implements View.OnClickListener {
                 Toast.makeText(getContext(), "压缩失败，请检查文件路径是否正确！", Toast.LENGTH_SHORT).show();
             }
         });
+
     }
+
 
 }

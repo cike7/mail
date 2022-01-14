@@ -1,6 +1,7 @@
 package com.zhuli.mail.adapter;
 
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -13,10 +14,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.zhuli.mail.R;
 import com.zhuli.mail.mail.LogInfo;
+import com.zhuli.mail.util.FileMime;
+import com.zhuli.mail.util.LoadBitmapAsyncTask;
 import com.zhuli.mail.util.PathUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -28,8 +32,6 @@ import java.util.concurrent.Executors;
  * Author: zl
  */
 public class FileItemAdapter extends RecyclerView.Adapter<FileItemViewHolder> {
-
-    private final ExecutorService executors = Executors.newCachedThreadPool();
 
     private List<String> filePaths = new ArrayList<>();
     private List<String> names;
@@ -43,8 +45,10 @@ public class FileItemAdapter extends RecyclerView.Adapter<FileItemViewHolder> {
     @NonNull
     @Override
     public FileItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        final int parentWidth = parent.getMeasuredWidth() / 4;
+        final int parentHeight = parentWidth + (int) (parent.getResources().getDisplayMetrics().density * 18);
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_file, parent, false);
-        view.setLayoutParams(new ViewGroup.LayoutParams(210, 300));
+        view.setLayoutParams(new ViewGroup.LayoutParams(parentWidth, parentHeight));
         return new FileItemViewHolder(view);
     }
 
@@ -91,19 +95,26 @@ public class FileItemAdapter extends RecyclerView.Adapter<FileItemViewHolder> {
             }
         }
 
-        executors.execute(new Runnable() {
-            @Override
-            public void run() {
-                names = new ArrayList<>();
-                bitmaps = new ArrayList<>();
-                for (int i = 0; i < filePaths.size(); i++) {
-                    String[] filePath = filePaths.get(i).split("/");
-                    names.add(filePath[filePath.length - 1]);
-                    bitmaps.add(PathUtil.getImageThumbnail(filePaths.get(i), 200, 200));
+        for (int k = 0; k < filePaths.size(); k++) {
+
+            String[] filePath = filePaths.get(k).split("/");
+            String fileName = filePath[filePath.length - 1];
+            names.add(fileName);
+            if (fileName.endsWith(".jpg") || fileName.endsWith(".jpeg") || fileName.endsWith(".png")) {
+                try {
+                    //异步加载略缩图任务
+                    LoadBitmapAsyncTask task = new LoadBitmapAsyncTask();
+                    task.execute(filePaths.get(k));
+                    bitmaps.add(task.get());
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
                 }
-                handler.sendEmptyMessage(0);
+            } else {
+                bitmaps.add(null);
             }
-        });
+        }
+
+        notifyDataSetChanged();
 
     }
 
@@ -120,14 +131,5 @@ public class FileItemAdapter extends RecyclerView.Adapter<FileItemViewHolder> {
             notifyDataSetChanged();
         }
     }
-
-    private final Handler handler = new Handler(Looper.getMainLooper()) {
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-            super.handleMessage(msg);
-            notifyDataSetChanged();
-        }
-    };
-
 
 }

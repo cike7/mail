@@ -44,40 +44,12 @@ public class FragmentReceiveViewModel extends ViewModel {
         items.add("bbbbbbbbbbbb");
         items.add("cccccccccccc");
         items.add("dddddddddddd");
-        items.add("aaaaaaaaaaaa");
-        items.add("bbbbbbbbbbbb");
-        items.add("cccccccccccc");
-        items.add("dddddddddddd");
-        items.add("aaaaaaaaaaaa");
-        items.add("bbbbbbbbbbbb");
-        items.add("cccccccccccc");
-        items.add("dddddddddddd");
-        items.add("aaaaaaaaaaaa");
-        items.add("bbbbbbbbbbbb");
-        items.add("cccccccccccc");
-        items.add("dddddddddddd");
-        items.add("aaaaaaaaaaaa");
-        items.add("bbbbbbbbbbbb");
-        items.add("cccccccccccc");
-        items.add("dddddddddddd");
-        items.add("aaaaaaaaaaaa");
-        items.add("bbbbbbbbbbbb");
-        items.add("cccccccccccc");
-        items.add("dddddddddddd");
-        items.add("aaaaaaaaaaaa");
-        items.add("bbbbbbbbbbbb");
-        items.add("cccccccccccc");
-        items.add("dddddddddddd");
-        items.add("aaaaaaaaaaaa");
-        items.add("bbbbbbbbbbbb");
-        items.add("cccccccccccc");
-        items.add("dddddddddddd");
 
         adapter = new MsgItemAdapter<String>(android.R.layout.test_list_item, items, new ICallback<MsgItemAdapter<String>.BindingView>() {
             @Override
             public void onCall(MsgItemAdapter<String>.BindingView bind) {
                 TextView view = (TextView) bind.getView();
-                view.setTextSize(25);
+                view.setTextSize(22);
                 view.setTextColor(Color.BLACK);
                 view.setPadding(50, 10, 0, 10);
                 view.setText(bind.getData());

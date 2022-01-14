@@ -79,7 +79,6 @@ public class NetworkDiagnosisUtil {
 
     }
 
-
     /**
      * 没有网络连接处理
      */
@@ -91,10 +90,13 @@ public class NetworkDiagnosisUtil {
                     .setPositiveButton("确认", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
                             mContext.get().startActivity(new Intent(android.provider.Settings.ACTION_WIFI_SETTINGS));
                         }
                     })
-                    .setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
+                    .setNegativeButton("取消", (dialog, which) -> {
+                        dialog.dismiss();
+                    });
             builder.create().show();
         }
     }

@@ -1,6 +1,7 @@
 package com.zhuli.mail.adapter;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -9,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.zhuli.mail.R;
+import com.zhuli.mail.mail.LogInfo;
 
 /**
  * Copyright (C) 王字旁的理
@@ -32,7 +34,6 @@ public class FileItemViewHolder extends RecyclerView.ViewHolder {
         if (bitmap != null) {
             imageView.setImageBitmap(bitmap);
         } else {
-            textView.setAlpha(1);
             imageView.setImageResource(R.mipmap.ic_drive_file);
         }
     }

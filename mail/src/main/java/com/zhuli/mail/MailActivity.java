@@ -40,7 +40,7 @@ public class MailActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.page_mail_view);
 
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(new MailReceiveFragment());
+//        fragments.add(new MailReceiveFragment());
         fragments.add(new MailSendFragment());
 
         adapter = new FragmentsAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, fragments);

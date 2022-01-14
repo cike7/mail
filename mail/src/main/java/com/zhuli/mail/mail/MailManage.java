@@ -25,6 +25,8 @@ public class MailManage implements TransportAbstraction {
     private final String FROM_ADD;
     private final String FROM_PSW;
 
+    //发送完成回调
+    private ICallback<String> callback;
     //单个核线的fixed
     private final ExecutorService executor;
 
@@ -65,6 +67,10 @@ public class MailManage implements TransportAbstraction {
         this.RECEIVE_PORT = port;
     }
 
+    public <T> void send(String toAdd, T data, ICallback<String> callback) {
+        send(toAdd, data);
+        this.callback = callback;
+    }
 
     @Override
     public <T> void send(String toAdd, T data) {
@@ -72,7 +78,7 @@ public class MailManage implements TransportAbstraction {
         if (data instanceof Iterable) {
             MailInfo mailInfo = createSendMail(toAdd, (List<File>) data);
             executor.execute(() -> {
-                SendMessage<MailInfo> mail = new JakartaSendMailImp();
+                SendMessage<MailInfo> mail = new JakartaSendMailImp(callback);
 //                MailSend mail = new JavaxMailImp();
                 mail.send(mailInfo);
             });

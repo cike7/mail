@@ -1,5 +1,10 @@
 package com.zhuli.mail.mail;
 
+import android.os.Handler;
+import android.os.Looper;
+
+import androidx.annotation.NonNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -26,17 +31,29 @@ import jakarta.mail.internet.MimeMultipart;
  */
 public class JakartaSendMailImp implements SendMessage<MailInfo> {
 
+    private Handler handler;
     private ICallback<String> callback;
 
     public JakartaSendMailImp() {
+
     }
 
     public JakartaSendMailImp(ICallback<String> callback) {
+        if (callback == null) return;
         this.callback = callback;
+        handler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(android.os.Message msg) {
+                super.handleMessage(msg);
+                callback.onCall((String) msg.obj);
+            }
+        };
     }
 
     @Override
     public void send(MailInfo info) {
+
+        android.os.Message handleMessage = handler.obtainMessage();
 
         try {
             Properties props = info.getSendProperties();
@@ -86,14 +103,19 @@ public class JakartaSendMailImp implements SendMessage<MailInfo> {
             msg.saveChanges();
             Transport.send(msg);
             LogInfo.e("邮件发送成功");
+            if (callback != null) {
+                handleMessage.obj = "邮件发送成功!";
+            }
 
         } catch (MessagingException | IOException e) {
-            LogInfo.e("发送邮件错误！");
-            e.printStackTrace();
-        } finally {
+            LogInfo.e("发送邮件错误！" + e.getMessage());
             if (callback != null) {
-                callback.onCall("邮件发送成功!");
+                handleMessage.obj = "邮件发送成功!" + e.getMessage();
             }
+
+        }
+        if (callback != null) {
+            handler.sendMessage(handleMessage);
         }
     }
 

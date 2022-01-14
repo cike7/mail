@@ -72,7 +72,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
             } else if (NetworkInfo.State.CONNECTED == info.getState()) {//wifi连接上了
                 LogInfo.e("wifi已连接");
                 if (!NetworkDiagnosisUtil.getNetworkState()) {
-                    new ReceiveHandler(context).sendEmptyMessage(200);
+                    ReceiveHandler.sendMessage("012110", "wifi_notification", "wifi已连接!");
                     NetworkDiagnosisUtil.setNowNetworkConnectState(true);
                 }
 

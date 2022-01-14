@@ -5,6 +5,7 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.zhuli.mail.file.CallbackProcessingListener;
+import com.zhuli.mail.mail.ICallback;
 import com.zhuli.mail.mail.LogInfo;
 import com.zhuli.mail.mail.MailUtil;
 import com.zhuli.mail.util.NetworkDiagnosisUtil;
@@ -27,7 +28,7 @@ public class MailEntrustManage {
      * @param toAdd     收件人
      * @param filesPath 附件地址
      */
-    public static void sendFileMail(Context context, String toAdd, List<String> filesPath) {
+    public static void sendFileMail(String toAdd, List<String> filesPath, ICallback<String> callback) {
 
         if (NetworkDiagnosisUtil.getNetworkState()) {
             if (filesPath.size() > 0) {
@@ -38,8 +39,7 @@ public class MailEntrustManage {
                     }
                 }
                 if (files.size() > 0) {
-                    MailUtil.send(toAdd, files);
-                    Toast.makeText(context, "邮件发送成功!", Toast.LENGTH_SHORT).show();
+                    MailUtil.send(toAdd, files, callback);
 
                 } else {
                     LogInfo.e("选择邮件为空");

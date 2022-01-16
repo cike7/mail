@@ -1,26 +1,14 @@
 package com.zhuli.mail.fragment;
 
 import android.app.Activity;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -28,28 +16,20 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.zhuli.mail.MailActivity;
 import com.zhuli.mail.MailEntrustManage;
 import com.zhuli.mail.R;
-import com.zhuli.mail.adapter.FileItemAdapter;
 import com.zhuli.mail.mail.ICallback;
-import com.zhuli.mail.mail.LogInfo;
 import com.zhuli.mail.model.FragmentSendViewModel;
-import com.zhuli.mail.receiver.ReceiveHandler;
 import com.zhuli.mail.util.IntentUtil;
-import com.zhuli.mail.util.LoadBitmapAsyncTask;
 import com.zhuli.mail.util.PathUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 
 public class MailSendFragment extends Fragment implements View.OnClickListener {
@@ -128,17 +108,16 @@ public class MailSendFragment extends Fragment implements View.OnClickListener {
 
         if (v.getId() == R.id.but_send_mail) { //发送
 
+            getView().findViewById(R.id.frame_progress_bar_layout).setVisibility(View.VISIBLE);
 
-//            getView().findViewById(R.id.frame_progress_bar_layout).setVisibility(View.VISIBLE);
-//
-//            MailEntrustManage.sendFileMail(editRecipient.getText().toString(), viewModel.getAdapter().getFilePaths(), new ICallback<String>() {
-//                @Override
-//                public void onCall(String s) {
-//                    Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
-//                    viewModel.getAdapter().clear();
-//                    getView().findViewById(R.id.frame_progress_bar_layout).setVisibility(View.GONE);
-//                }
-//            });
+            MailEntrustManage.sendFileMail(editRecipient.getText().toString(), viewModel.getAdapter().getFilePaths(), new ICallback<String>() {
+                @Override
+                public void onCall(String s) {
+                    Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
+                    viewModel.getAdapter().clear();
+                    getView().findViewById(R.id.frame_progress_bar_layout).setVisibility(View.GONE);
+                }
+            });
 
         } else if (v.getId() == R.id.but_get_file) { //打开文件选择器
 

@@ -3,7 +3,6 @@ package com.zhuli.mail.util;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -15,6 +14,9 @@ import androidx.core.app.ActivityCompat;
 
 import com.zhuli.mail.mail.LogInfo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Copyright (C) 王字旁的理
@@ -24,6 +26,7 @@ import com.zhuli.mail.mail.LogInfo;
  */
 public class PermissionUtil {
 
+    private static SpecialPermissionsManage manage;
     //先定义
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
 
@@ -57,9 +60,9 @@ public class PermissionUtil {
                 }
             }
 
-            //弹窗显示
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (!Settings.canDrawOverlays(activity)) {
+                    //弹窗显示
                     Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                             Uri.parse("package:" + activity.getPackageName()));
                     activity.startActivityForResult(intent, REQUEST_EXTERNAL_STORAGE);
@@ -86,32 +89,113 @@ public class PermissionUtil {
                 LogInfo.e(permissions[nowPerm] + "申请权限结果====" + grant);
                 if (grant != PackageManager.PERMISSION_GRANTED) {
                     isAllGranted = false;
+                    if (manage == null) {
+                        manage = new SpecialPermissionsManage();
+                    }
+                    //设置当前未通过权限
+                    manage.setCurrentPermission(permissions[nowPerm]);
                     break;
                 }
                 nowPerm += 1;
             }
+
+
             //拒绝了权限
-            if (!isAllGranted) {
+            if (!isAllGranted && !manage.isAdvancedPermission(permissions[nowPerm])) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                builder.setMessage("软件功能需要获取" + permissions[nowPerm] + "权限, 是否继续并且选择允许?")
-                        .setTitle("提示")
-                        .setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                ActivityCompat.requestPermissions(activity, permissions, REQUEST_EXTERNAL_STORAGE);
+                builder.setTitle("提示")
+                        .setMessage("软件功能需要获取" + permissions[nowPerm].replace("android.permission.", "") + "权限, 是否继续并且选择允许?")
+                        .setPositiveButton("确认", (dialog, which) -> {
+                            if (manage.getCurrentPermissionState() == 1) {
+                                //添加为高级权限，需要到设置里开启
+                                manage.addAdvancedPermissions();
+                            } else {
+                                manage.updateCurrentPermissionState();
                             }
+                            dialog.dismiss();
+                            ActivityCompat.requestPermissions(activity, permissions, REQUEST_EXTERNAL_STORAGE);
                         })
-                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                activity.finish();
-                            }
+                        .setNegativeButton("取消", (dialog, which) -> {
+                            dialog.dismiss();
+                            manage.addRefusePermissions();
+                            activity.finish();
                         });
                 builder.create().show();
+
             }
         }
     }
+
+
+    /**
+     * 权限再次申请管理
+     */
+    public static class SpecialPermissionsManage {
+        //拒绝权限
+        private List<String> refusePermissions;
+        //高级权限
+        private List<String> advancedPermissions;
+        //当前未通过权限
+        private String currentPermission = null;
+        //当前未通过权限状态
+        private int currentPermissionState;
+
+        private SpecialPermissionsManage() {
+            currentPermissionState = 0;
+            refusePermissions = new ArrayList<>();
+            advancedPermissions = new ArrayList<>();
+        }
+
+        public void setCurrentPermission(String permission) {
+            currentPermission = permission;
+        }
+
+        public void addRefusePermissions() {
+            refusePermissions.add(currentPermission);
+        }
+
+        public void addAdvancedPermissions() {
+            advancedPermissions.add(currentPermission);
+            currentPermissionState = 0;
+        }
+
+        /**
+         * 检查是不是高级权限或者被拒绝到权限
+         *
+         * @param permission
+         * @return
+         */
+        public boolean isAdvancedPermission(String permission) {
+            if (currentPermissionState == 1 && permission.equals(currentPermission)) {
+                addAdvancedPermissions();
+            }
+            for (int i = 0; i < refusePermissions.size(); i++) {
+                if (refusePermissions.get(i).equals(permission)) {
+                    return true;
+                }
+            }
+            for (int k = 0; k < advancedPermissions.size(); k++) {
+                if (advancedPermissions.get(k).equals(permission)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /**
+         * 更新权限状态
+         */
+        public void updateCurrentPermissionState() {
+            if (currentPermissionState == 0) {
+                currentPermissionState = 1;
+            }
+        }
+
+        public int getCurrentPermissionState() {
+            return currentPermissionState;
+        }
+
+    }
+
 
 }

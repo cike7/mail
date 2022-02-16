@@ -5,6 +5,8 @@ import android.os.Looper;
 
 import androidx.annotation.NonNull;
 
+import com.zhuli.mail.util.FileMime;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -91,12 +93,12 @@ public class JakartaSendMailImp implements SendMessage<MailInfo> {
             mp.setSubType("mixed");
             // 附件
             if (info.getAttachFiles().size() > 0) {
+                MimeBodyPart attach = new MimeBodyPart();
                 // 创建邮件附件
                 for (File file : info.getAttachFiles()) {
-                    MimeBodyPart attach = new MimeBodyPart();
                     attach.attachFile(file);
-                    mp.addBodyPart(attach);
                 }
+                mp.addBodyPart(attach);
             }
             msg.setContent(mp);
             msg.setSentDate(new Date());

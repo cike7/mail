@@ -122,20 +122,22 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:visibility="gone">
+        android:visibility="visible">
+
+        <ProgressBar
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginBottom="10dp"
+            android:layout_gravity="center" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|top"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center"
             android:text="正在上传,请稍后..."
             android:textColor="@android:color/black"
-            android:textSize="18sp" />
-
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
+            android:textSize="8sp" />
 
     </FrameLayout>
 

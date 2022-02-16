@@ -37,7 +37,7 @@ public class MailSendFragment extends Fragment implements View.OnClickListener {
     private EditText editRecipient;
     private Spinner spinnerContact;
     private RecyclerView recyclerView;
-
+    //跳转activity回调
     private ActivityResultLauncher<Intent> resultLauncher;
 
     private ArrayAdapter<String> spinnerAdapter;
@@ -110,13 +110,10 @@ public class MailSendFragment extends Fragment implements View.OnClickListener {
 
             getView().findViewById(R.id.frame_progress_bar_layout).setVisibility(View.VISIBLE);
 
-            MailEntrustManage.sendFileMail(editRecipient.getText().toString(), viewModel.getAdapter().getFilePaths(), new ICallback<String>() {
-                @Override
-                public void onCall(String s) {
-                    Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
-                    viewModel.getAdapter().clear();
-                    getView().findViewById(R.id.frame_progress_bar_layout).setVisibility(View.GONE);
-                }
+            MailEntrustManage.sendFileMail(editRecipient.getText().toString(), viewModel.getAdapter().getFilePaths(), s -> {
+                Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
+                viewModel.getAdapter().clear();
+                getView().findViewById(R.id.frame_progress_bar_layout).setVisibility(View.GONE);
             });
 
         } else if (v.getId() == R.id.but_get_file) { //打开文件选择器

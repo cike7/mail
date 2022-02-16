@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.widget.Toast;
 
-import com.zhuli.mail.util.AppUpdate;
+//import com.zhuli.mail.util.AppUpdate;
 import com.zhuli.mail.util.DownloadUtil;
 
 public class DownloadCompleteReceiver extends BroadcastReceiver {
@@ -38,7 +38,7 @@ public class DownloadCompleteReceiver extends BroadcastReceiver {
                 if (filePath != null) {
                     if (filePath.contains(context.getPackageName())) {
                         if (filePath.endsWith("apk")) {
-                            AppUpdate.installAPK(context, filePath);
+//                            AppUpdate.installAPK(context, filePath);
 
                         } else {
                             Toast.makeText(context, "下载完成", Toast.LENGTH_SHORT).show();

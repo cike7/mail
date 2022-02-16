@@ -24,26 +24,6 @@ public class FragmentReceiveViewModel extends ViewModel {
     public FragmentReceiveViewModel() {
 
         List<String> items = new ArrayList<>();
-        items.add("aaaaaaaaaaaa");
-        items.add("bbbbbbbbbbbb");
-        items.add("cccccccccccc");
-        items.add("dddddddddddd");
-        items.add("aaaaaaaaaaaa");
-        items.add("bbbbbbbbbbbb");
-        items.add("cccccccccccc");
-        items.add("dddddddddddd");
-        items.add("aaaaaaaaaaaa");
-        items.add("bbbbbbbbbbbb");
-        items.add("cccccccccccc");
-        items.add("dddddddddddd");
-        items.add("aaaaaaaaaaaa");
-        items.add("bbbbbbbbbbbb");
-        items.add("cccccccccccc");
-        items.add("dddddddddddd");
-        items.add("aaaaaaaaaaaa");
-        items.add("bbbbbbbbbbbb");
-        items.add("cccccccccccc");
-        items.add("dddddddddddd");
 
         adapter = new MsgItemAdapter<String>(android.R.layout.test_list_item, items, new ICallback<MsgItemAdapter<String>.BindingView>() {
             @Override

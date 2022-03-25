@@ -12,8 +12,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
@@ -23,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.zhuli.mail.MailEntrustManage;
 import com.zhuli.mail.R;
-import com.zhuli.mail.mail.ICallback;
+import com.zhuli.mail.mail.LogInfo;
 import com.zhuli.mail.model.FragmentSendViewModel;
 import com.zhuli.mail.util.IntentUtil;
 import com.zhuli.mail.util.PathUtil;
@@ -50,13 +48,10 @@ public class MailSendFragment extends Fragment implements View.OnClickListener {
 
         viewModel = new ViewModelProvider(this).get(FragmentSendViewModel.class);
 
-        resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-            @Override
-            public void onActivityResult(ActivityResult result) {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    if (result.getData() != null) {
-                        viewModel.getAdapter().updateData(PathUtil.getPaths(getContext(), result.getData()));
-                    }
+        resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                if (result.getData() != null) {
+                    viewModel.getAdapter().updateData(PathUtil.getPaths(getContext(), result.getData()));
                 }
             }
         });

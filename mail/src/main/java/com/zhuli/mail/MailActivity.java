@@ -12,6 +12,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.zhuli.mail.adapter.FragmentsAdapter;
 import com.zhuli.mail.fragment.MailReceiveFragment;
 import com.zhuli.mail.fragment.MailSendFragment;
+import com.zhuli.mail.mail.LogInfo;
 import com.zhuli.mail.util.NetworkDiagnosisUtil;
 import com.zhuli.mail.util.PermissionUtil;
 
@@ -34,6 +35,7 @@ public class MailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mail);
 
+        LogInfo.init(this);
         NetworkDiagnosisUtil.init(this);
         PermissionUtil.verifyStoragePermissions(this);
 
